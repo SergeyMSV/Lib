@@ -12,10 +12,22 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\Lib\utilsPacketStar_Test.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="devConfig.h" />
+    <ClInclude Include="..\Lib\utilsBase.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
     <ClInclude Include="..\Lib\utilsCRC.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lib\utilsPacket.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lib\utilsPacketStar.h">
       <Filter>Lib</Filter>
     </ClInclude>
     <ClInclude Include="libConfig.h" />

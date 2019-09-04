@@ -49,7 +49,7 @@ typename std::enable_if<std::is_trivially_copyable<T>::value, T>::type Read(Iter
 {
 	T Data = 0;
 
-	int Size = std::distance(first, last);
+	auto Size = std::distance(first, last);
 
 	if (Size <= sizeof(T))
 	{

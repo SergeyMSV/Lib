@@ -1,14 +1,8 @@
-void PacketStar();
-void PacketStar2();
-void PacketBNTBX2();
+#include <iostream>
 
 int main()
 {
-	PacketStar();
-
-	PacketStar2();
-
-	PacketBNTBX2();
+	std::cout << "It is tested with utilsPacketStar.h\n";
 
 	return 0;
 }

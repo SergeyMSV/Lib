@@ -1,8 +1,13 @@
-#include "PacketBNTBX2_Common.h"
-#include "PacketBNTBX2_Msg0802.h"
-#include <iostream>
+#include "utilsPacketBNTBX2.h"
 
-void PacketBNTBX2()
+#include "PacketBNTBX2_Msg0802.h"
+
+//#include "utilsTest.h"
+#include <iostream>//Replace with utilsTest.h
+
+typedef utils::packet::tPacket<utils::packet_bntbx::tFormatBNTBX2, utils::packet::tPayloadCommon> tPacketBNTBX2;
+
+void UnitTest_PacketBNTBX2_Msg0802()
 {
 	{
 		tPacketBNTBX2 Packet;
@@ -60,33 +65,6 @@ void PacketBNTBX2()
 				break;
 			}
 			}
-		}
-	}
-
-	{
-		tVectorUInt8 Data{ 
-			0x00, 0x08, 0x5F, 0x5F, //Rubbish
-			0x5F, 0x66, 0x00, 0x00, 0x00, 0x08, 0x02, 0x01, 0x00, 0x00, 0xAA, 0x62 };
-
-		tPacketBNTBX2 Packet;
-
-		if (tPacketBNTBX2::Find(Data, Packet))
-		{
-			std::cout << "tPacketBNTBX2::Find() OK\n";
-		}
-	}
-
-	{
-		tVectorUInt8 Data{
-			0x00, 0x08, 0x5F, 0x5F, //Rubbish
-			0x5F, 0x66, 0x00, 0x00, 0x00, 0x08, 0x02, 0x01, 0x00, 0x00, 0xAA, 0x62,
-			0x00, 0x08, 0x5F, 0x5F };
-
-		tPacketBNTBX2 Packet;
-
-		if (tPacketBNTBX2::Find(Data, Packet))
-		{
-			std::cout << "tPacketBNTBX2::Find() OK\n";
 		}
 	}
 }

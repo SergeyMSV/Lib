@@ -1,7 +1,18 @@
-#include "PacketStar_Common.h"
-#include <iostream>
+#include "utilsPacketStar.h"
+//#include "utilsTest.h"
+#include <iostream>//Replace with utilsTest.h
 
-void PacketStar()
+
+namespace utils
+{
+	namespace packet_star
+	{
+		namespace unit_test
+		{
+
+typedef utils::packet::tPacket<utils::packet_star::tFormatStar, utils::packet::tPayloadCommon> tPacketStar;
+
+void UnitTest_PacketStar()
 {
 	{
 		tPacketStar Packet;
@@ -46,6 +57,10 @@ void PacketStar()
 		if (tPacketStar::Find(Data, Packet))
 		{
 			std::cout << "tPacketStar::Find() OK\n";
+		}
+	}
+}
+
 		}
 	}
 }

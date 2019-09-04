@@ -12,12 +12,30 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\Lib\utilsPacketBNTBX2_Test.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketBNTBX2_Msg0802_Test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="devConfig.h" />
+    <ClInclude Include="..\Lib\utilsBase.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
     <ClInclude Include="..\Lib\utilsCRC.h">
       <Filter>Lib</Filter>
     </ClInclude>
+    <ClInclude Include="..\Lib\utilsPacket.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lib\utilsPacketBNTBX2.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
     <ClInclude Include="libConfig.h" />
+    <ClInclude Include="PacketBNTBX2_Msg0802.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

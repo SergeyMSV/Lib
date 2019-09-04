@@ -15,7 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="devConfig.h" />
-    <ClInclude Include="..\Lib\utilsCRC.h">
+    <ClInclude Include="..\Lib\utilsPacket.h">
       <Filter>Lib</Filter>
     </ClInclude>
     <ClInclude Include="libConfig.h" />
