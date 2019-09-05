@@ -4,15 +4,13 @@
 
 namespace utils
 {
-	namespace packet_bntbx
+	namespace unit_test
 	{
-		namespace unit_test
-		{
-
-typedef utils::packet::tPacket<utils::packet_bntbx::tFormatBNTBX2, utils::packet::tPayloadCommon> tPacketBNTBX2;
 
 void UnitTest_PacketBNTBX2()
 {
+	typedef utils::packet::tPacket<utils::packet_bntbx::tFormatBNTBX2, utils::packet::tPayloadCommon> tPacketBNTBX2;
+
 	{
 		tVectorUInt8 Data{ 
 			0x00, 0x08, 0x5F, 0x5F, //Rubbish
@@ -41,6 +39,5 @@ void UnitTest_PacketBNTBX2()
 	}
 }
 
-		}
 	}
 }

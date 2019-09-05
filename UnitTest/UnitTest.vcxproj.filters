@@ -15,16 +15,43 @@
     <ClCompile Include="..\Lib\utilsBase_Test.cpp">
       <Filter>Lib</Filter>
     </ClCompile>
+    <ClCompile Include="..\Lib\utilsPacketBNTBX2_Test.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Lib\utilsPacketStar_Test.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Lib\utilsPacketStar2_Test.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
     <ClCompile Include="..\Lib\utilsTest.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Lib\utilsTest_Test.cpp">
       <Filter>Lib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="devConfig.h" />
+    <ClInclude Include="libConfig.h" />
     <ClInclude Include="..\Lib\utilsBase.h">
       <Filter>Lib</Filter>
     </ClInclude>
-    <ClInclude Include="libConfig.h" />
+    <ClInclude Include="..\Lib\utilsCRC.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lib\utilsPacket.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lib\utilsPacketBNTBX2.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lib\utilsPacketStar.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lib\utilsPacketStar2.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
     <ClInclude Include="..\Lib\utilsTest.h">
       <Filter>Lib</Filter>
     </ClInclude>

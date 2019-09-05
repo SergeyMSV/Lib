@@ -33,7 +33,7 @@ typename std::enable_if<std::is_trivially_copyable<T>::value, void>::type Append
 template<typename T>
 typename std::enable_if<std::is_trivially_copyable<T>::value, tVectorUInt8>::type ToVector(const T& value)
 {
-	std::vector<char> Data;
+	tVectorUInt8 Data;
 
 	Data.reserve(sizeof(value));
 
@@ -65,6 +65,14 @@ typename std::enable_if<std::is_trivially_copyable<T>::value, T>::type Read(cons
 	return Read<T, const char*>(data, data + dataSize);
 }
 
+template<typename T>
+typename std::enable_if<std::is_trivially_copyable<T>::value, T>::type Read(const unsigned char* data, size_t dataSize)
+{
+	const char* Begin = reinterpret_cast<const char*>(data);
+
+	return Read<T, const char*>(Begin, Begin + dataSize);
+}
+
 enum tRadix
 {
 	tRadix_10 = 10,
@@ -74,8 +82,7 @@ enum tRadix
 template<typename T, typename Iterator, int N = 20>
 typename std::enable_if<std::is_trivially_copyable<T>::value, T>::type Read(Iterator first, Iterator last, tRadix radix)
 {
-	tUInt8 Str[N];//[#] and +/- and 0x00
-	//char Str[20];//[#] and +/- and 0x00
+	char Str[N];//[#] and +/- and 0x00
 
 	int StrIndex = 0;
 

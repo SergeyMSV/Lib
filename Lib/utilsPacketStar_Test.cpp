@@ -5,15 +5,13 @@
 
 namespace utils
 {
-	namespace packet_star
+	namespace unit_test
 	{
-		namespace unit_test
-		{
-
-typedef utils::packet::tPacket<utils::packet_star::tFormatStar, utils::packet::tPayloadCommon> tPacketStar;
 
 void UnitTest_PacketStar()
 {
+	typedef utils::packet::tPacket<utils::packet_star::tFormatStar, utils::packet::tPayloadCommon> tPacketStar;
+
 	{
 		tPacketStar Packet;
 
@@ -61,6 +59,5 @@ void UnitTest_PacketStar()
 	}
 }
 
-		}
 	}
 }
