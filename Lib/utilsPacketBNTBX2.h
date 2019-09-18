@@ -15,7 +15,7 @@
 
 namespace utils
 {
-	namespace packet_bntbx
+	namespace packet_BNTBX
 	{
 
 template <class TPayload>

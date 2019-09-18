@@ -9,7 +9,7 @@ namespace utils
 
 void UnitTest_PacketStar2()
 {
-	typedef utils::packet::tPacket<utils::packet_star::tFormatStar2, utils::packet::tPayloadCommon> tPacketStar2;
+	typedef utils::packet::tPacket<utils::packet_Star::tFormatStar2, utils::packet::tPayloadCommon> tPacketStar2;
 
 	{
 		tPacketStar2 Packet;

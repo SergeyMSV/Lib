@@ -1,0 +1,214 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// utilsPacketNMEA.h
+//
+// Created by Sergey Maslennikov
+// Tel.:   +7-916-540-09-19
+// E-mail: maslennikovserge@yandex.ru
+//
+// Standard ISO/IEC 114882, C++17
+//
+// |   version  |    release    | Description
+// |------------|---------------|---------------------------------
+// |      1     |   2019 01 31  |
+// |      2     |   2019 02 07  | Added tPacket(std::string& address, int payloadItemQty, bool encapsulation = false);
+// |      3     |   2019 05 01  | Refactored
+// |            |               | 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#ifndef LIB_UTILS_PACKET_NMEA_H
+#define LIB_UTILS_PACKET_NMEA_H
+
+#include "utilsCRC.h"
+#include "utilsPacket.h"
+
+#include <string>
+#include <vector>
+
+namespace utils
+{
+	namespace packet_NMEA
+	{
+///////////////////////////////////////////////////////////////////////////////////////////////////
+template <class TPayload>
+struct tFormatNMEA
+{
+	static const unsigned char STX = '$';
+
+protected:
+	static tVectorUInt8 TestPacket(tVectorUInt8::const_iterator cbegin, tVectorUInt8::const_iterator cend)
+	{
+		size_t Size = std::distance(cbegin, cend);
+
+		if (Size >= GetSize(0) && *cbegin == STX)
+		{
+			tVectorUInt8::const_iterator Begin = cbegin + 1;
+			tVectorUInt8::const_iterator End = std::find(Begin, cend, '*');
+
+			if (End != cend)
+			{
+				size_t DataSize = std::distance(Begin, End);
+
+				if (Size >= GetSize(DataSize) && VerifyCRC(Begin, DataSize))
+				{
+					return tVectorUInt8(cbegin, cbegin + GetSize(DataSize));
+				}
+			}
+		}
+
+		return tVectorUInt8();
+	}
+
+	static bool TryParse(const tVectorUInt8& packetVector, tFormatNMEA& format, TPayload& payload)
+	{
+		if (packetVector.size() >= GetSize(0) && packetVector[0] == STX)
+		{
+			tVectorUInt8::const_iterator Begin = packetVector.cbegin() + 1;
+			tVectorUInt8::const_iterator End = std::find(Begin, packetVector.cend(), '*');
+
+			if (End != packetVector.cend())
+			{
+				size_t DataSize = std::distance(Begin, End);
+
+				if (packetVector.size() == GetSize(DataSize) && VerifyCRC(Begin, DataSize))
+				{
+					payload = TPayload(Begin, End);
+
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	static size_t GetSize(size_t payloadSize) { return sizeof(STX) + payloadSize + 5; };//$*xx\xd\xa
+
+	void Append(tVectorUInt8& dst, const TPayload& payload) const
+	{
+		dst.push_back(STX);
+
+		payload.Append(dst);
+
+		unsigned char CRC = utils::crc::CRC08_NMEA<tVectorUInt8::const_iterator>(dst.cbegin() + 1, dst.cend());
+
+		dst.push_back('*');
+
+		char StrCRC[5];
+		sprintf_s(StrCRC, "%02X", CRC);
+
+		dst.push_back(StrCRC[0]);
+		dst.push_back(StrCRC[1]);
+
+		dst.push_back(0x0D);
+		dst.push_back(0x0A);
+	}
+
+private:
+	static bool VerifyCRC(tVectorUInt8::const_iterator begin, size_t crcDataSize)
+	{
+		auto CRC = utils::crc::CRC08_NMEA(begin, begin + crcDataSize);
+
+		tVectorUInt8::const_iterator CRCBegin = begin + crcDataSize + 1;//1 for '*'
+
+		auto CRCReceived = utils::Read<unsigned char>(CRCBegin, CRCBegin + 2, utils::tRadix_16);
+
+		return CRC == CRCReceived;
+	}
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////
+struct tPayloadCommon
+{
+	std::vector<std::string> Data;
+
+	tPayloadCommon() { }
+
+	tPayloadCommon(tVectorUInt8::const_iterator cbegin, tVectorUInt8::const_iterator cend)
+	{
+		std::string LocalString;
+
+		for (tVectorUInt8::const_iterator i = cbegin; i != cend; ++i)
+		{
+			if (*i == ',')
+			{
+				Data.push_back(LocalString);
+				LocalString.clear();
+			}
+			else
+			{
+				LocalString.push_back(static_cast<char>(*i));
+			}
+		}
+
+		if (LocalString.size())
+		{
+			Data.push_back(LocalString);
+		}
+	}
+
+	size_t GetSize() const
+	{
+		size_t Size = 0;
+
+		for (size_t i = 0; i < Data.size(); ++i)
+		{
+			Size += Data[i].size();
+
+			if (i != Data.size() - 1)
+			{
+				Size += 1;
+			}
+		}
+
+		return Size;
+	}
+
+	void Append(tVectorUInt8& dst) const
+	{
+		for (size_t i = 0; i < Data.size(); ++i)
+		{
+			dst.insert(dst.end(), Data[i].cbegin(), Data[i].cend());
+
+			if (i != Data.size() - 1)
+			{
+				dst.push_back(',');
+			}
+		}
+	}
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+
+const int ContainerSize = 6;//$*xx\xd\xa
+//const int ContainerSizeNoCRC = 3;//$\xd\xa
+
+std::vector<char> FindPacket(std::vector<char>& receivedData);
+
+struct tPacket
+{
+	bool Encapsulation;
+
+	std::string Address;
+	std::vector<std::string> Payload;
+
+	tPacket();
+	tPacket(int payloadItemQty, bool encapsulation = false);
+	tPacket(std::string address, int payloadItemQty, bool encapsulation = false);
+	tPacket(std::string address, std::vector<std::string>& payload, bool encapsulation = false);
+
+	static bool TryParse(std::vector<char>& receivedPacket, tPacket& packet);
+
+	std::vector<char> ToVector();
+};
+
+	}
+}
+
+#endif//LIB_UTILS_PACKET_NMEA_H

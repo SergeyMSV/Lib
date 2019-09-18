@@ -5,7 +5,7 @@
 //#include "utilsTest.h"
 #include <iostream>//Replace with utilsTest.h
 
-typedef utils::packet::tPacket<utils::packet_bntbx::tFormatBNTBX2, utils::packet::tPayloadCommon> tPacketBNTBX2;
+typedef utils::packet::tPacket<utils::packet_BNTBX::tFormatBNTBX2, utils::packet::tPayloadCommon> tPacketBNTBX2;
 
 void UnitTest_PacketBNTBX2_Msg0802()
 {

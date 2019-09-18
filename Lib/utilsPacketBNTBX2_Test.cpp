@@ -9,7 +9,7 @@ namespace utils
 
 void UnitTest_PacketBNTBX2()
 {
-	typedef utils::packet::tPacket<utils::packet_bntbx::tFormatBNTBX2, utils::packet::tPayloadCommon> tPacketBNTBX2;
+	typedef utils::packet::tPacket<utils::packet_BNTBX::tFormatBNTBX2, utils::packet::tPayloadCommon> tPacketBNTBX2;
 
 	{
 		tVectorUInt8 Data{ 

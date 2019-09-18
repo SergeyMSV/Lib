@@ -30,13 +30,13 @@
 // |     15     |   2017 04 15  | Modified
 // |     16     |   2019 01 31  | Added CRC08_NMEA(unsigned char * pcBlock, unsigned short size)
 // |     17     |   2019 05 01  | Refactored
-// |     18     |   2019 06 20  | Updated
+// |     18     |   2019 08 25  | Updated
 // |            |               | 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #ifndef LIB_UTILS_CRC_H
 #define LIB_UTILS_CRC_H
 
-//#include <libConfig.h>
+#include <stddef.h>
 
 namespace utils
 {

@@ -108,7 +108,7 @@ struct tPayloadCommon
 		Data.insert(Data.end(), cbegin, cend);
 	}
 
-	size_t GetSize() const { return Data.size(); };
+	size_t GetSize() const { return Data.size(); }
 
 	void Append(tVectorUInt8& dst) const
 	{

@@ -19,7 +19,7 @@
 
 namespace utils
 {
-	namespace packet_star
+	namespace packet_Star
 	{
 
 template <class TPayload>
