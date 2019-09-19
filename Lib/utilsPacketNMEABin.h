@@ -2,7 +2,7 @@
 // utilsPacketNMEABin.h
 //
 // Created by Sergey Maslennikov
-// Tel.:   +7-916-540-09-19
+// Tel.:   
 // E-mail: maslennikovserge@yandex.ru
 //
 // Standard ISO/IEC 114882, C++17

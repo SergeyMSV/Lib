@@ -2,7 +2,7 @@
 // utilsTest
 //
 // Created by Sergey Maslennikov
-// Tel.:   +7-916-540-09-19
+// Tel.:   
 // E-mail: maslennikovserge@yandex.ru
 //
 // |   version  |    release    | Description
