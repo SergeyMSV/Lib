@@ -26,6 +26,9 @@
     <ClCompile Include="..\Lib\utilsTest_Test.cpp">
       <Filter>Lib</Filter>
     </ClCompile>
+    <ClCompile Include="..\Lib\utilsPacketNMEA_Test.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="devConfig.h" />
@@ -49,6 +52,15 @@
       <Filter>Lib</Filter>
     </ClInclude>
     <ClInclude Include="..\Lib\utilsTest.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lib\utilsBaseBool.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lib\utilsCharset-TBD.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lib\utilsPacketNMEA.h">
       <Filter>Lib</Filter>
     </ClInclude>
   </ItemGroup>

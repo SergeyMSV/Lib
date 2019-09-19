@@ -30,6 +30,9 @@ struct tFormatStar
 	static const unsigned char STX = '*';
 
 protected:
+	template <class tMsg>
+	void SetPayloadIDs(const tMsg& msg) { }
+
 	static tVectorUInt8 TestPacket(tVectorUInt8::const_iterator cbegin, tVectorUInt8::const_iterator cend)
 	{
 		size_t Size = std::distance(cbegin, cend);

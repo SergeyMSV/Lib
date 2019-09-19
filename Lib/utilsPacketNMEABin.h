@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// utilsPacketNMEA.h
+// utilsPacketNMEABin.h
 //
 // Created by Sergey Maslennikov
 // Tel.:   +7-916-540-09-19
@@ -9,16 +9,12 @@
 //
 // |   version  |    release    | Description
 // |------------|---------------|---------------------------------
-// |      1     |   2019 01 31  |
-// |      2     |   2019 02 07  | Added tPacket(std::string& address, int payloadItemQty, bool encapsulation = false);
-// |      3     |   2019 05 01  | Refactored
-// |      4     |   2019 09 19  | Refactored
+// |      1     |   2019 09 19  |
 // |            |               | 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include "utilsCRC.h"
-#include "utilsPacket.h"
+#include "utilsPacketNMEA.h"
 
 #include <string>
 #include <vector>
@@ -29,9 +25,9 @@ namespace utils
 	{
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 template <class TPayload>
-struct tFormatNMEA
+struct tFormatNMEABin// : public tFormatNMEA<TPayload>
 {
-	static const unsigned char STX = '$';
+	static const unsigned char STX = '!';
 
 protected:
 	template <class tMsg>
@@ -60,7 +56,7 @@ protected:
 		return tVectorUInt8();
 	}
 
-	static bool TryParse(const tVectorUInt8& packetVector, tFormatNMEA& format, TPayload& payload)
+	static bool TryParse(const tVectorUInt8& packetVector, tFormatNMEABin& format, TPayload& payload)
 	{
 		if (packetVector.size() >= GetSize(0) && packetVector[0] == STX)
 		{
@@ -115,63 +111,6 @@ private:
 		auto CRCReceived = utils::Read<unsigned char>(CRCBegin, CRCBegin + 2, utils::tRadix_16);
 
 		return CRC == CRCReceived;
-	}
-};
-///////////////////////////////////////////////////////////////////////////////////////////////////
-struct tPayloadCommon
-{
-	std::vector<std::string> Data;
-
-	tPayloadCommon() { }
-
-	tPayloadCommon(tVectorUInt8::const_iterator cbegin, tVectorUInt8::const_iterator cend)
-	{
-		std::string LocalString;
-
-		for (tVectorUInt8::const_iterator i = cbegin; i != cend; ++i)
-		{
-			if (*i == ',')
-			{
-				Data.push_back(LocalString);
-				LocalString.clear();
-			}
-			else
-			{
-				LocalString.push_back(static_cast<char>(*i));
-			}
-		}
-
-		Data.push_back(LocalString);
-	}
-
-	size_t GetSize() const
-	{
-		size_t Size = 0;
-
-		for (size_t i = 0; i < Data.size(); ++i)
-		{
-			Size += Data[i].size();
-
-			if (i != Data.size() - 1)
-			{
-				Size += 1;
-			}
-		}
-
-		return Size;
-	}
-
-	void Append(tVectorUInt8& dst) const
-	{
-		for (size_t i = 0; i < Data.size(); ++i)
-		{
-			dst.insert(dst.end(), Data[i].cbegin(), Data[i].cend());
-
-			if (i != Data.size() - 1)
-			{
-				dst.push_back(',');
-			}
-		}
 	}
 };
 

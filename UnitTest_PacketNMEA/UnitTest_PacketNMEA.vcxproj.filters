@@ -8,9 +8,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="..\Lib\utilsPacketNMEA.cpp">
-      <Filter>Lib</Filter>
-    </ClCompile>
     <ClCompile Include="..\Lib\utilsPacketNMEA_Test.cpp">
       <Filter>Lib</Filter>
     </ClCompile>
@@ -34,6 +31,9 @@
       <Filter>Lib</Filter>
     </ClInclude>
     <ClInclude Include="..\Lib\utilsTest.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lib\utilsPacketNMEABin.h">
       <Filter>Lib</Filter>
     </ClInclude>
   </ItemGroup>

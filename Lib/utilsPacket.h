@@ -81,6 +81,12 @@ public:
 		TPayload::Data = msg.ToVector();
 	}
 
+	template <class T>
+	void SetMsg(const std::vector<T>& msg)
+	{
+		TPayload::Data = msg;
+	}
+
 	tVectorUInt8 ToVector()
 	{
 		size_t PayloadSize = TPayload::GetSize();
