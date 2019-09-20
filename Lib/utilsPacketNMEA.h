@@ -12,7 +12,7 @@
 // |      1     |   2019 01 31  |
 // |      2     |   2019 02 07  | Added tPacket(std::string& address, int payloadItemQty, bool encapsulation = false);
 // |      3     |   2019 05 01  | Refactored
-// |      4     |   2019 09 19  | Refactored
+// |      4     |   2019 09 20  | Refactored
 // |            |               | 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma once
@@ -28,10 +28,10 @@ namespace utils
 	namespace packet_NMEA
 	{
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-template <class TPayload>
-struct tFormatNMEA
+template <class TPayload, unsigned int stx = '$'>
+struct tFormat
 {
-	static const unsigned char STX = '$';
+	static const unsigned char STX = stx;// '$';
 
 protected:
 	template <class tMsg>
@@ -60,7 +60,7 @@ protected:
 		return tVectorUInt8();
 	}
 
-	static bool TryParse(const tVectorUInt8& packetVector, tFormatNMEA& format, TPayload& payload)
+	static bool TryParse(const tVectorUInt8& packetVector, tFormat& format, TPayload& payload)
 	{
 		if (packetVector.size() >= GetSize(0) && packetVector[0] == STX)
 		{
@@ -117,6 +117,9 @@ private:
 		return CRC == CRCReceived;
 	}
 };
+///////////////////////////////////////////////////////////////////////////////////////////////////
+template <class TPayload> struct tFormatNMEA : public tFormat<TPayload, '$'> { };
+template <class TPayload> struct tFormatNMEABin : public tFormat<TPayload, '!'> { };
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 struct tPayloadCommon
 {

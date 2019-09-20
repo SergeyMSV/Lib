@@ -1,5 +1,4 @@
 #include "utilsPacketNMEA.h"
-#include "utilsPacketNMEABin.h"
 
 #include "utilsBase.h"
 #include "utilsTest.h"
