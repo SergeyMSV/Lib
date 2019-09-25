@@ -3,7 +3,10 @@
 #include <stdlib.h>
 #include <iomanip>
 #include <iostream>
+
+#ifndef __GNUC__
 #include <Windows.h>
+#endif//__GNUC__
 
 namespace utils
 {
@@ -33,13 +36,17 @@ void ASSERT(bool value)
 {
 	if (value)
 	{
+#ifndef __GNUC__
 		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 		SetConsoleTextAttribute(hConsole, (WORD)((tConsoleColor_White << 4) | tConsoleColor_Black));
+#endif//__GNUC__
 
 		std::cout << "\n\n""ASSERT -> ERROR""\n\n" << std::endl;
 
+#ifndef __GNUC__
 		SetConsoleTextAttribute(hConsole, (WORD)((tConsoleColor_Black << 4) | tConsoleColor_LightGray));
+#endif//__GNUC__
 
 		system("pause");
 	}
@@ -47,6 +54,7 @@ void ASSERT(bool value)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void RESULT(const char* msg, bool result)
 {
+#ifndef __GNUC__
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	//÷вет всего фона - белый. ÷вет всего текста - черный
@@ -54,6 +62,7 @@ void RESULT(const char* msg, bool result)
 	//puts("Hello World!");
 	//÷вет символов - желтый. ÷вет фона - темно-серый
 	//SetConsoleTextAttribute(hConsole, (WORD)((DarkGray << 4) | Yellow));
+#endif//__GNUC__
 
 	std::cout << std::setw(70) << std::setfill('.') << std::setiosflags(std::ios::left) << msg;
 
@@ -63,11 +72,15 @@ void RESULT(const char* msg, bool result)
 	}
 	else
 	{
+#ifndef __GNUC__
 		SetConsoleTextAttribute(hConsole, (WORD)((tConsoleColor_Red << 4) | tConsoleColor_Yellow));
+#endif//__GNUC__
 
 		std::cout << "ERROR";
 
+#ifndef __GNUC__
 		SetConsoleTextAttribute(hConsole, (WORD)((tConsoleColor_Black << 4) | tConsoleColor_LightGray));
+#endif//__GNUC__
 	}
 
 	std::cout << std::endl;
@@ -77,13 +90,17 @@ void WARNING(const char* msg, bool show)
 {
 	if (show)
 	{
+#ifndef __GNUC__
 		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 		SetConsoleTextAttribute(hConsole, (WORD)(tConsoleColor_LightRed));
+#endif//__GNUC__
 
 		std::cout<<"WARNING: " << msg;
 
+#ifndef __GNUC__
 		SetConsoleTextAttribute(hConsole, (WORD)((tConsoleColor_Black << 4) | tConsoleColor_LightGray));
+#endif//__GNUC__
 
 		std::cout << std::endl;
 	}
