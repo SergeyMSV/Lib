@@ -13,7 +13,9 @@ namespace utils
 	namespace test
 	{
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-enum tConsoleColor {
+#ifndef __GNUC__
+enum tConsoleColor
+{
 	tConsoleColor_Black = 0,
 	tConsoleColor_Blue = 1,
 	tConsoleColor_Green = 2,
@@ -31,24 +33,46 @@ enum tConsoleColor {
 	tConsoleColor_Yellow = 14,
 	tConsoleColor_White = 15
 };
+#else//__GNUC__
+enum tConsoleColor
+{
+	tConsoleColor_Black = 0,
+	tConsoleColor_Red = 1,
+	tConsoleColor_Green = 2,
+	tConsoleColor_Yellow = 3,
+	tConsoleColor_Blue = 4,
+	tConsoleColor_Magenta = 5,
+	tConsoleColor_Cyan = 6,
+	tConsoleColor_White = 7
+};
+#endif//__GNUC__
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void ASSERT(bool value)
 {
 	if (value)
 	{
+		std::cout << "\n\n";
+
 #ifndef __GNUC__
 		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 		SetConsoleTextAttribute(hConsole, (WORD)((tConsoleColor_White << 4) | tConsoleColor_Black));
+#else//__GNUC__
+		std::cout << "\x1b[3" << tConsoleColor_Black << ";4" << tConsoleColor_White << "m";
 #endif//__GNUC__
 
-		std::cout << "\n\n""ASSERT -> ERROR""\n\n" << std::endl;
+		std::cout << "ASSERT -> ERROR";
 
 #ifndef __GNUC__
 		SetConsoleTextAttribute(hConsole, (WORD)((tConsoleColor_Black << 4) | tConsoleColor_LightGray));
+#else//__GNUC__
+		std::cout << "\x1b[0m";
 #endif//__GNUC__
 
-		system("pause");
+		std::cout << "\n\n\n";
+
+		std::cin.get();
+		//system("pause");
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,12 +98,16 @@ void RESULT(const char* msg, bool result)
 	{
 #ifndef __GNUC__
 		SetConsoleTextAttribute(hConsole, (WORD)((tConsoleColor_Red << 4) | tConsoleColor_Yellow));
+#else//__GNUC__
+		std::cout << "\x1b[3" << tConsoleColor_Yellow << ";4" << tConsoleColor_Red << "m";
 #endif//__GNUC__
 
 		std::cout << "ERROR";
 
 #ifndef __GNUC__
 		SetConsoleTextAttribute(hConsole, (WORD)((tConsoleColor_Black << 4) | tConsoleColor_LightGray));
+#else//__GNUC__
+		std::cout << "\x1b[0m";
 #endif//__GNUC__
 	}
 
@@ -94,12 +122,17 @@ void WARNING(const char* msg, bool show)
 		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 		SetConsoleTextAttribute(hConsole, (WORD)(tConsoleColor_LightRed));
+#else//__GNUC__
+		std::cout << "\x1b[3" << tConsoleColor_Red << "m";
+		//std::cout << "\x1b[3" << tConsoleColor_Red << ";4" << tConsoleColor_Black << "m";
 #endif//__GNUC__
 
 		std::cout<<"WARNING: " << msg;
 
 #ifndef __GNUC__
 		SetConsoleTextAttribute(hConsole, (WORD)((tConsoleColor_Black << 4) | tConsoleColor_LightGray));
+#else//__GNUC__
+		std::cout << "\x1b[0m";
 #endif//__GNUC__
 
 		std::cout << std::endl;
