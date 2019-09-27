@@ -1,6 +1,5 @@
 #include "utilsTest.h"
 
-#include <stdlib.h>
 #include <iomanip>
 #include <iostream>
 
@@ -72,7 +71,6 @@ void ASSERT(bool value)
 		std::cout << "\n\n\n";
 
 		std::cin.get();
-		//system("pause");
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
