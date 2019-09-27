@@ -11,8 +11,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include <stdlib.h>
-#include <string.h>
+#include <cassert>
+#include <cstdlib>
+#include <cstring>
 
 #include <algorithm>
 #include <vector>
@@ -129,6 +130,123 @@ typename std::enable_if<std::is_trivially_copyable<T>::value, T>::type Reverse(T
 	std::reverse<tUInt8*>(Begin, Begin + sizeof(value));
 
 	return value;
+}
+
+namespace type
+{
+
+template <unsigned int size>
+struct tKey1
+{
+	enum { Size = size };
+	tUInt8 Value[size];
+
+	//tKey() in union it's deleted by default
+	//{
+	//	std::memset(Value, 0, Size);
+	//}
+
+	tUInt8& operator [] (std::size_t i)
+	{
+		assert(i < Size);
+
+		return Value[i];
+	}
+
+	bool operator == (const tKey1& value)
+	{
+		return std::memcmp(Value, value.Value, Size) == 0;
+	}
+
+	bool operator != (const tKey1& value)
+	{
+		return std::memcmp(Value, value.Value, Size) != 0;
+	}
+};
+
+template <unsigned int size>
+struct tKey2 : public tKey1<size>
+{
+	tKey2()
+	{
+		std::memset(this->Value, 0, this->Size);
+	}
+};
+
+}
+
+union tKey128
+{
+	typedef type::tKey1<16> tKeyValue;
+
+	enum { type_key = true };
+
+	struct
+	{
+		unsigned int A;
+		unsigned int B;
+		unsigned int C;
+		unsigned int D;
+	}Field;
+
+	tKeyValue Value;
+};
+
+union tKey96
+{
+	typedef type::tKey1<12> tKeyValue;
+
+	enum { type_key = true };
+
+	struct
+	{
+		unsigned int A;
+		unsigned int B;
+		unsigned int C;
+	}Field;
+
+	tKeyValue Value;
+};
+
+union tKey64
+{
+	typedef type::tKey1<8> tKeyValue;
+
+	enum { type_key = true };
+
+	struct
+	{
+		unsigned int A;
+		unsigned int B;
+	}Field;
+
+	tKeyValue Value;
+};
+
+union tKey32
+{
+	typedef type::tKey1<4> tKeyValue;
+
+	enum { type_key = true };
+
+	struct
+	{
+		unsigned int A;
+	}Field;
+
+	tKeyValue Value;
+};
+
+template<class T>
+typename std::enable_if<std::is_union<T>::value&& T::type_key, bool>::type operator == (const T& val1, const T& val2)
+{
+	return std::memcmp(val1.Value.Value, val2.Value.Value, T::tKeyValue::Size) == 0;
+}
+
+template<class T>
+typename std::enable_if<std::is_union<T>::value&& T::type_key, bool>::type operator != (const T& val1, const T& val2)
+{
+	return std::memcmp(val1.Value.Value, val2.Value.Value, T::tKeyValue::Size) != 0;
 }
 
 //char FromBCD(char dataBCD); [TBD]
