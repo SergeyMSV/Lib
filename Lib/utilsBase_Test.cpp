@@ -486,98 +486,31 @@ void UnitTest_Base()
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 
 	{
-		type::tKey2<10> Key_1;
-		type::tKey2<10> Key_2;
+		type::tArray2<10> Value_1;
+		type::tArray2<10> Value_2;
 
-		utils::test::RESULT("type::tKey2<10> ==", Key_1 == Key_2);
+		utils::test::RESULT("type::tArray2<10> ==", Value_1 == Value_2);
 
-		Key_1[4] = 4;
+		Value_1[4] = 4;
 
-		utils::test::RESULT("type::tKey2<10> !=", Key_1 != Key_2);
+		utils::test::RESULT("type::tArray2<10> !=", Value_1 != Value_2);
 	}
 
 	{
-		type::tKey1<10> Key_1;
-		type::tKey1<10> Key_2;
+		type::tArray1<10> Value_1;
+		type::tArray1<10> Value_2;
 
-		type::tKey2<10> Key2;
+		type::tArray2<10> Key2;
 
-		Key_1 = Key2;
-		Key_2 = Key2;
+		Value_1 = Key2;
+		Value_2 = Key2;
 
-		utils::test::RESULT("type::tKey1<10> ==", Key_1 == Key_2);
+		utils::test::RESULT("type::tArray1<10> ==", Value_1 == Value_2);
 
-		Key_1[4] = 4;
+		Value_1[4] = 4;
 
-		utils::test::RESULT("type::tKey1<10> !=", Key_1 != Key_2);
+		utils::test::RESULT("type::tArray1<10> !=", Value_1 != Value_2);
 	}
-
-	{
-		tKey128 Key_1;
-		tKey128 Key_2;
-
-		utils::type::tKey2<16> Key2;
-
-		Key_1.Value = Key2;
-		Key_2.Value = Key2;
-
-		utils::test::RESULT("tKey128 ==", Key_1 == Key_2);
-
-		Key_1.Field.A = 4;
-
-		utils::test::RESULT("tKey128 !=", Key_1 != Key_2);
-	}
-
-	{
-		tKey96 Key_1;
-		tKey96 Key_2;
-
-		utils::type::tKey2<12> Key2;
-
-		Key_1.Value = Key2;
-		Key_2.Value = Key2;
-
-		utils::test::RESULT("tKey96 ==", Key_1 == Key_2);
-
-		Key_1.Field.A = 4;
-
-		utils::test::RESULT("tKey96 !=", Key_1 != Key_2);
-	}
-
-	{
-		tKey64 Key_1;
-		tKey64 Key_2;
-
-		utils::type::tKey2<8> Key2;
-
-		Key_1.Value = Key2;
-		Key_2.Value = Key2;
-
-		utils::test::RESULT("tKey64 ==", Key_1 == Key_2);
-
-		Key_1.Field.A = 4;
-
-		utils::test::RESULT("tKey64 !=", Key_1 != Key_2);
-	}
-
-	{
-		tKey32 Key_1;
-		tKey32 Key_2;
-
-		utils::type::tKey2<4> Key2;
-
-		Key_1.Value = Key2;
-		Key_2.Value = Key2;
-
-		utils::test::RESULT("tKey32 ==", Key_1 == Key_2);
-
-		Key_1.Field.A = 4;
-
-		utils::test::RESULT("tKey32 !=", Key_1 != Key_2);
-	}
-
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/* [TBD]
 	//////////////////////////////////////////////////////////////////////////////////////////////////
