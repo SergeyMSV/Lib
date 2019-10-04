@@ -66,6 +66,46 @@ struct tKey2 : public tKey1<size>
 
 }
 
+union tKey256
+{
+	typedef type::tKey1<8> tKeyValue;
+
+	enum { type_key = true };
+
+	struct
+	{
+		tUInt32 A;
+		tUInt32 B;
+		tUInt32 C;
+		tUInt32 D;
+		tUInt32 E;
+		tUInt32 F;
+		tUInt32 G;
+		tUInt32 H;
+	}Field;
+
+	tKeyValue Value;
+};
+
+union tKey192
+{
+	typedef type::tKey1<6> tKeyValue;
+
+	enum { type_key = true };
+
+	struct
+	{
+		tUInt32 A;
+		tUInt32 B;
+		tUInt32 C;
+		tUInt32 D;
+		tUInt32 E;
+		tUInt32 F;
+	}Field;
+
+	tKeyValue Value;
+};
+
 union tKey128
 {
 	typedef type::tKey1<4> tKeyValue;
@@ -118,7 +158,7 @@ union tKey32
 {
 	typedef type::tKey1<1> tKeyValue;
 
-	enum { type_key = true };
+	enum { type_key = true , };
 
 	struct
 	{
@@ -129,13 +169,13 @@ union tKey32
 };
 
 template <class T>
-typename std::enable_if<std::is_union<T>::value&& T::type_key, bool>::type operator == (const T& val1, const T& val2)
+typename std::enable_if<std::is_union<T>::value && T::type_key, bool>::type operator == (const T& val1, const T& val2)
 {
 	return std::memcmp(val1.Value.Value, val2.Value.Value, T::tKeyValue::Size) == 0;
 }
 
 template <class T>
-typename std::enable_if<std::is_union<T>::value&& T::type_key, bool>::type operator != (const T& val1, const T& val2)
+typename std::enable_if<std::is_union<T>::value && T::type_key, bool>::type operator != (const T& val1, const T& val2)
 {
 	return std::memcmp(val1.Value.Value, val2.Value.Value, T::tKeyValue::Size) != 0;
 }
@@ -147,17 +187,17 @@ typename std::enable_if<T::type_key, std::string>::type ToString(const T& value)
 
 	std::string LocalString;
 
-	LocalString.reserve(Size * 2 + 4);
+	LocalString.reserve(Size * 9);
 
 	for (int i = Size; i > 0; --i)
 	{
 		char Str[20];
 
-		std::sprintf(Str, "%08X", value.Value[i]);
+		std::sprintf(Str, "%08X", value.Value.Value[i - 1]);
 
 		LocalString += Str;
 
-		if (i != Size)
+		if (i != 1)
 		{
 			LocalString += '-';
 		}
