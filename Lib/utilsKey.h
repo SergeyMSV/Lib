@@ -66,6 +66,46 @@ struct tKey2 : public tKey1<size>
 
 }
 
+union tKey256
+{
+	typedef type::tKey1<8> tKeyValue;
+
+	enum { type_key = true };
+
+	struct
+	{
+		tUInt32 A;
+		tUInt32 B;
+		tUInt32 C;
+		tUInt32 D;
+		tUInt32 E;
+		tUInt32 F;
+		tUInt32 G;
+		tUInt32 H;
+	}Field;
+
+	tKeyValue Value;
+};
+
+union tKey192
+{
+	typedef type::tKey1<6> tKeyValue;
+
+	enum { type_key = true };
+
+	struct
+	{
+		tUInt32 A;
+		tUInt32 B;
+		tUInt32 C;
+		tUInt32 D;
+		tUInt32 E;
+		tUInt32 F;
+	}Field;
+
+	tKeyValue Value;
+};
+
 union tKey128
 {
 	typedef type::tKey1<4> tKeyValue;
@@ -147,7 +187,7 @@ typename std::enable_if<T::type_key, std::string>::type ToString(const T& value)
 
 	std::string LocalString;
 
-	LocalString.reserve(Size * 2 + 4);
+	LocalString.reserve(Size * 9);
 
 	for (int i = Size; i > 0; --i)
 	{
