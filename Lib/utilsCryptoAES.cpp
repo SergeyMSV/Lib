@@ -1,8 +1,8 @@
 #include "utilsCryptoAES.h"
 
-//#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
-#include <stdio.h>
-//#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+//#ifdef LIB_UTILS_CRYPTO_AES_LOG
+#include <cstdio>
+//#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 namespace utils
 {
@@ -12,7 +12,7 @@ namespace utils
 		{
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Number of rounds, which is a function of Nk and Nb (which is fixed). For this standard, Nr = 10, 12, or 14. (Also see Sec. 6.3.)
-int g_NR[] =
+const int g_NR[] =
 {
 	10,//tAES_CYPHER_128
 	12,//tAES_CYPHER_192
@@ -20,7 +20,7 @@ int g_NR[] =
 };
 
 //Number of 32-bit words comprising the Cipher Key. For this standard, Nk = 4, 6, or 8. (Also see Sec. 6.3.)
-int g_NK[] =
+const int g_NK[] =
 {
 	4,//tAES_CYPHER_128
 	6,//tAES_CYPHER_192
@@ -28,7 +28,7 @@ int g_NK[] =
 };
 
 //Number of columns (32-bit words) comprising the State. For this standard, Nb = 4. (Also see Sec. 6.3.)
-int g_NB[] =
+const int g_NB[] =
 {
 	4,//tAES_CYPHER_128
 	4,//tAES_CYPHER_192
@@ -125,87 +125,85 @@ unsigned int SwapWord(unsigned int val)
 //nr: number of rounds
 //nb: number of columns comprising the state, nb = 4 dwords (16 bytes)
 //nk: number of 32-bit words comprising cipher key, nk = 4, 6, 8 (KeyLength/(4*8))
-void KeyExpansion(tAES_CYPHER mode, unsigned char *key, unsigned char *round)
+void KeyExpansion(tAES_CYPHER mode, const unsigned char* key, unsigned char* round)
 {
-	unsigned int *w = (unsigned int *)round;
+	unsigned int* w = (unsigned int*)round;
 	unsigned int  t;
 	int i = 0;
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
-	printf("Key Expansion:\n");
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
+	std::printf("Key Expansion:\n");
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 	do
 	{
-		w[i] = *((unsigned int *)&key[i * 4 + 0]);
+		w[i] = *((unsigned int*)& key[i * 4 + 0]);
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
-		printf("    %2.2d:  rs: %8.8x\n", i, SwapWord(w[i]));
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
+		std::printf("    %2.2d:  rs: %8.8x\n", i, SwapWord(w[i]));
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
-	}
-	while (++i < g_NK[mode]);
+	} while (++i < g_NK[mode]);
 
 	do
 	{
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
-		printf("    %2.2d: ", i);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
+		std::printf("    %2.2d: ", i);
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 		if ((i % g_NK[mode]) == 0)
 		{
 			t = RotWord(w[i - 1]);
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
-			printf(" rot: %8.8x", SwapWord(t));
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
+			std::printf(" rot: %8.8x", SwapWord(t));
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 			t = SubWord(t);
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
-			printf(" sub: %8.8x", SwapWord(t));
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
+			std::printf(" sub: %8.8x", SwapWord(t));
 
-			printf(" rcon: %8.8x", g_aes_rcon[i / g_NK[mode] - 1]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+			std::printf(" rcon: %8.8x", g_aes_rcon[i / g_NK[mode] - 1]);
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 			t = t ^ SwapWord(g_aes_rcon[i / g_NK[mode] - 1]);
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
-			printf(" xor: %8.8x", t);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
+			std::printf(" xor: %8.8x", t);
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 		}
 		else if (g_NK[mode] > 6 && (i % g_NK[mode]) == 4)
 		{
 			t = SubWord(w[i - 1]);
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
-			printf(" sub: %8.8x", SwapWord(t));
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
+			std::printf(" sub: %8.8x", SwapWord(t));
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 		}
 		else
 		{
 			t = w[i - 1];
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
-			printf(" equ: %8.8x", SwapWord(t));
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
+			std::printf(" equ: %8.8x", SwapWord(t));
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 		}
 
 		w[i] = w[i - g_NK[mode]] ^ t;
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
-		printf(" rs: %8.8x\n", SwapWord(w[i]));
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
-	}
-	while (++i < g_NB[mode] * (g_NR[mode] + 1));
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
+		std::printf(" rs: %8.8x\n", SwapWord(w[i]));
+#endif//LIB_UTILS_CRYPTO_AES_LOG
+	} while (++i < g_NB[mode] * (g_NR[mode] + 1));
 
 	//key can be discarded (or zeroed) from memory
 }
 
-void AddRoundKey(tAES_CYPHER mode, unsigned char *state, unsigned char *round, int nr)
+void AddRoundKey(tAES_CYPHER mode, unsigned char* state, unsigned char* round, int nr)
 {
-	unsigned int *w = (unsigned int *)round;
-	unsigned int *s = (unsigned int *)state;
+	unsigned int* w = (unsigned int*)round;
+	unsigned int* s = (unsigned int*)state;
 
 	for (int i = 0; i < g_NB[mode]; i++)
 	{
@@ -213,7 +211,7 @@ void AddRoundKey(tAES_CYPHER mode, unsigned char *state, unsigned char *round, i
 	}
 }
 
-void SubBytes(tAES_CYPHER mode, unsigned char *state)
+void SubBytes(tAES_CYPHER mode, unsigned char* state)
 {
 	for (int i = 0; i < g_NB[mode]; i++)
 	{
@@ -224,9 +222,9 @@ void SubBytes(tAES_CYPHER mode, unsigned char *state)
 	}
 }
 
-void ShiftRows(tAES_CYPHER mode, unsigned char *state)
+void ShiftRows(tAES_CYPHER mode, unsigned char* state)
 {
-	unsigned char *s = (unsigned char *)state;
+	unsigned char* s = (unsigned char*)state;
 
 	for (int i = 1; i < g_NB[mode]; i++)
 	{
@@ -269,7 +267,7 @@ unsigned char aes_mul(unsigned char x, unsigned char y)
 		(((y >> 7) & 1) * aes_xtimes(x, 7)));
 }
 
-void MixColumns(tAES_CYPHER mode, unsigned char *state)
+void MixColumns(tAES_CYPHER mode, unsigned char* state)
 {
 	unsigned char y[16] = { 2, 3, 1, 1,  1, 2, 3, 1,  1, 1, 2, 3,  3, 1, 1, 2 };
 	unsigned char s[4];
@@ -293,19 +291,19 @@ void MixColumns(tAES_CYPHER mode, unsigned char *state)
 	}
 }
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
-void PrintfDump(char *msg, unsigned char *data, int len)
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
+void PrintfDump(const char* msg, const unsigned char* data, int len)
 {
-	printf("%8.8s: ", msg);
+	std::printf("%8.8s: ", msg);
 
 	for (int i = 0; i < len; i++)
 	{
-		printf(" %2.2x", data[i]);
+		std::printf(" %2.2x", data[i]);
 	}
 
-	printf("\n");
+	std::printf("\n");
 }
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 int GetDataBlockSize(tAES_CYPHER mode)
 {
@@ -359,11 +357,16 @@ tAES_CYPHER_ERR VerifyKey(tAES_CYPHER mode, const std::vector<char>& key)//[TBD]
 	return CERR;
 }
 
-tAES_CYPHER_ERR VerifyInputECB(tAES_CYPHER mode, const std::vector<char>& data, const std::vector<char>& key)
+bool VerifyInputECB(tAES_CYPHER mode, const tVectorUInt8& data)
+{
+	return data.size() != 0 && !(data.size() % (4 * g_NB[mode]));
+}
+
+tAES_CYPHER_ERR VerifyInputECB(tAES_CYPHER mode, const std::vector<char>& data, const std::vector<char>& key)//[TBD] DEPRECATED
 {
 	tAES_CYPHER_ERR CERR = tAES_CYPHER_ERR_None;
 
-	CERR = VerifyKey(mode, key);
+	CERR = VerifyKey(mode, key);//[TBD] not needed
 
 	if (CERR == tAES_CYPHER_ERR_None && (data.size() == 0 || data.size() % (4 * g_NB[mode])))
 	{
@@ -395,18 +398,18 @@ tAES_CYPHER_ERR VerifyInputCBC(tAES_CYPHER mode, std::vector<char>& data, const 
 	return CERR;
 }
 
-tAES_CYPHER_ERR Encrypt_ecb(tAES_CYPHER mode, unsigned char *data, int len, unsigned char *key)
+void Encrypt_ECB(tAES_CYPHER mode, unsigned char* data, int len, const unsigned char* key)
 {
 	unsigned char w[4 * 4 * 15] = { 0 };//round key
 	unsigned char s[4 * 4] = { 0 };//state
 
 	KeyExpansion(mode, key, w);
-	
+
 	for (int i = 0; i < len; i += 4 * g_NB[mode])//start data cypher loop over input buffer
 	{
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
-		printf("Encrypting block at %u ...\n", i);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
+		std::printf("Encrypting block at %u ...\n", i);
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 		for (int j = 0; j < 4 * g_NB[mode]; j++)//init state from user buffer (plaintext)
 		{
@@ -415,42 +418,42 @@ tAES_CYPHER_ERR Encrypt_ecb(tAES_CYPHER mode, unsigned char *data, int len, unsi
 
 		for (int nr = 0; nr <= g_NR[mode]; nr++)//start AES cypher loop over all AES rounds
 		{
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
-			printf(" Round %d:\n", nr);
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
+			std::printf(" Round %d:\n", nr);
 
 			PrintfDump("input", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 			if (nr > 0)
 			{
 				SubBytes(mode, s);
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 				PrintfDump("  sub", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 				ShiftRows(mode, s);
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 				PrintfDump("  shift", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 				if (nr < g_NR[mode])
 				{
 					MixColumns(mode, s);
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 					PrintfDump("  mix", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 				}
 			}
 
 			AddRoundKey(mode, s, w, nr);
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 			PrintfDump("  round", &w[nr * 4 * g_NB[mode]], 4 * g_NB[mode]);
 			PrintfDump("  state", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 		}
 
 		for (int j = 0; j < 4 * g_NB[mode]; j++)//save state (cypher) to user buffer
@@ -458,28 +461,28 @@ tAES_CYPHER_ERR Encrypt_ecb(tAES_CYPHER mode, unsigned char *data, int len, unsi
 			data[i + j] = s[j];
 		}
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
-		printf("Output:\n");
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
+		std::printf("Output:\n");
 		PrintfDump("cypher", &data[i], 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 	}
-
-	return tAES_CYPHER_ERR_None;
 }
 
-tAES_CYPHER_ERR EncryptECB(tAES_CYPHER mode, std::vector<char>& data, const std::vector<char>& key)
-{
-	tAES_CYPHER_ERR CERR = VerifyInputECB(mode, data, key);
+//tAES_CYPHER_ERR EncryptECB(tAES_CYPHER mode, std::vector<char>& data, const std::vector<char>& key)//[TBD]
+//{
+//	tAES_CYPHER_ERR CERR = VerifyInputECB(mode, data, key);
+//
+//	if (CERR == tAES_CYPHER_ERR_None)
+//	{
+//		Encrypt_ECB(mode, (unsigned char*)&data[0], data.size(), (unsigned char*)&key[0]);
+//
+//		return tAES_CYPHER_ERR_None;
+//	}
+//
+//	return CERR;
+//}
 
-	if (CERR == tAES_CYPHER_ERR_None)
-	{
-		return Encrypt_ecb(mode, (unsigned char*)&data[0], data.size(), (unsigned char*)&key[0]);
-	}
-
-	return CERR;
-}
-
-tAES_CYPHER_ERR Encrypt_cbc(tAES_CYPHER mode, unsigned char *data, int len, unsigned char *key, unsigned char *iv)
+tAES_CYPHER_ERR Encrypt_cbc(tAES_CYPHER mode, unsigned char* data, int len, unsigned char* key, unsigned char* iv)
 {
 	unsigned char w[4 * 4 * 15] = { 0 };//round key
 	unsigned char s[4 * 4] = { 0 };//state
@@ -498,40 +501,40 @@ tAES_CYPHER_ERR Encrypt_cbc(tAES_CYPHER mode, unsigned char *data, int len, unsi
 
 		for (int nr = 0; nr <= g_NR[mode]; nr++)//start AES cypher loop over all AES rounds
 		{
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 			PrintfDump("input", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 			if (nr > 0)
 			{
 				SubBytes(mode, s);
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 				PrintfDump("  sub", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 				ShiftRows(mode, s);
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 				PrintfDump("  shift", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 				if (nr < g_NR[mode])
 				{
 					MixColumns(mode, s);
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 					PrintfDump("  mix", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 				}
 			}
 
 			AddRoundKey(mode, s, w, nr);
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 			PrintfDump("  round", &w[nr * 4 * g_NB[mode]], 4 * g_NB[mode]);
 			PrintfDump("  state", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 		}
 
 		for (int j = 0; j < 4 * g_NB[mode]; j++)//save state (cypher) to user buffer
@@ -555,9 +558,9 @@ tAES_CYPHER_ERR EncryptCBC(tAES_CYPHER mode, std::vector<char>& data, const std:
 	return CERR;
 }
 
-void InvShiftRows(tAES_CYPHER mode, unsigned char *state)
+void InvShiftRows(tAES_CYPHER mode, unsigned char* state)
 {
-	unsigned char *s = (unsigned char *)state;
+	unsigned char* s = (unsigned char*)state;
 
 	for (int i = 1; i < g_NB[mode]; i++)
 	{
@@ -575,7 +578,7 @@ void InvShiftRows(tAES_CYPHER mode, unsigned char *state)
 	}
 }
 
-void InvSubBytes(tAES_CYPHER mode, unsigned char *state)
+void InvSubBytes(tAES_CYPHER mode, unsigned char* state)
 {
 	for (int i = 0; i < g_NB[mode]; i++)
 	{
@@ -586,7 +589,7 @@ void InvSubBytes(tAES_CYPHER mode, unsigned char *state)
 	}
 }
 
-void InvMixColumns(tAES_CYPHER mode, unsigned char *state)
+void InvMixColumns(tAES_CYPHER mode, unsigned char* state)
 {
 	unsigned char y[16] = { 0x0e, 0x0b, 0x0d, 0x09,  0x09, 0x0e, 0x0b, 0x0d, 0x0d, 0x09, 0x0e, 0x0b,  0x0b, 0x0d, 0x09, 0x0e };
 	unsigned char s[4];
@@ -610,7 +613,7 @@ void InvMixColumns(tAES_CYPHER mode, unsigned char *state)
 	}
 }
 
-tAES_CYPHER_ERR Decrypt_ecb(tAES_CYPHER mode, unsigned char *data, int len, unsigned char *key)
+void Decrypt_ECB(tAES_CYPHER mode, unsigned char* data, int len, const unsigned char* key)
 {
 	unsigned char w[4 * 4 * 15] = { 0 };//round key
 	unsigned char s[4 * 4] = { 0 };//state
@@ -619,9 +622,9 @@ tAES_CYPHER_ERR Decrypt_ecb(tAES_CYPHER mode, unsigned char *data, int len, unsi
 
 	for (int i = 0; i < len; i += 4 * g_NB[mode])//start data cypher loop over input buffer
 	{
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
-		printf("Decrypting block at %u ...\n", i);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
+		std::printf("Decrypting block at %u ...\n", i);
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 		for (int j = 0; j < 4 * g_NB[mode]; j++)//init state from user buffer (cyphertext)
 		{
@@ -630,44 +633,44 @@ tAES_CYPHER_ERR Decrypt_ecb(tAES_CYPHER mode, unsigned char *data, int len, unsi
 
 		for (int nr = g_NR[mode]; nr >= 0; nr--)//start AES cypher loop over all AES rounds
 		{
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
-			printf(" Round %d:\n", nr);
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
+			std::printf(" Round %d:\n", nr);
 			PrintfDump("input", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 			AddRoundKey(mode, s, w, nr);
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 			PrintfDump("  round", &w[nr * 4 * g_NB[mode]], 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 			if (nr > 0)
 			{
 				if (nr < g_NR[mode])
 				{
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 					PrintfDump("  mix", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 					InvMixColumns(mode, s);
 				}
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 				PrintfDump("  shift", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 				InvShiftRows(mode, s);
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 				PrintfDump("  sub", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 				InvSubBytes(mode, s);
 			}
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 			PrintfDump("  state", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 		}
 
 		for (int j = 0; j < 4 * g_NB[mode]; j++)//save state (cypher) to user buffer
@@ -675,28 +678,28 @@ tAES_CYPHER_ERR Decrypt_ecb(tAES_CYPHER mode, unsigned char *data, int len, unsi
 			data[i + j] = s[j];
 		}
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
-		printf("Output:\n");
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
+		std::printf("Output:\n");
 		PrintfDump("plain", &data[i], 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 	}
-
-	return tAES_CYPHER_ERR_None;
 }
 
-tAES_CYPHER_ERR DecryptECB(tAES_CYPHER mode, std::vector<char>& data, const std::vector<char>& key)
-{
-	tAES_CYPHER_ERR CERR = VerifyInputECB(mode, data, key);
+//tAES_CYPHER_ERR DecryptECB(tAES_CYPHER mode, std::vector<char>& data, const std::vector<char>& key)[TBD]
+//{
+//	tAES_CYPHER_ERR CERR = VerifyInputECB(mode, data, key);
+//
+//	if (CERR == tAES_CYPHER_ERR_None)
+//	{
+//		Decrypt_ECB(mode, (unsigned char*)&data[0], data.size(), (unsigned char*)&key[0]);
+//
+//		return tAES_CYPHER_ERR_None;
+//	}
+//
+//	return CERR;
+//}
 
-	if (CERR == tAES_CYPHER_ERR_None)
-	{
-		return Decrypt_ecb(mode, (unsigned char*)&data[0], data.size(), (unsigned char*)&key[0]);
-	}
-
-	return CERR;
-}
-
-tAES_CYPHER_ERR Decrypt_cbc(tAES_CYPHER mode, unsigned char *data, int len, unsigned char *key, unsigned char *iv)
+tAES_CYPHER_ERR Decrypt_cbc(tAES_CYPHER mode, unsigned char* data, int len, unsigned char* key, unsigned char* iv)
 {
 	unsigned char w[4 * 4 * 15] = { 0 };//round key
 	unsigned char s[4 * 4] = { 0 };//state
@@ -715,43 +718,43 @@ tAES_CYPHER_ERR Decrypt_cbc(tAES_CYPHER mode, unsigned char *data, int len, unsi
 
 		for (int nr = g_NR[mode]; nr >= 0; nr--)//start AES cypher loop over all AES rounds
 		{
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 			PrintfDump("input", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 			AddRoundKey(mode, s, w, nr);
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 			PrintfDump("  round", &w[nr * 4 * g_NB[mode]], 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 			if (nr > 0)
 			{
 				if (nr < g_NR[mode])
 				{
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 					PrintfDump("  mix", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 					InvMixColumns(mode, s);
 				}
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 				PrintfDump("  shift", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 				InvShiftRows(mode, s);
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 				PrintfDump("  sub", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 
 				InvSubBytes(mode, s);
 			}
 
-#ifdef LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#ifdef LIB_UTILS_CRYPTO_AES_LOG
 			PrintfDump("  state", s, 4 * g_NB[mode]);
-#endif//LIB_UTILS_CRYPTO_AES_PPRINTF_LOG
+#endif//LIB_UTILS_CRYPTO_AES_LOG
 		}
 
 		for (int j = 0; j < 4 * g_NB[mode]; j++)//save state (cypher) to user buffer
