@@ -153,11 +153,11 @@ typename std::enable_if<T::type_key, std::string>::type ToString(const T& value)
 	{
 		char Str[20];
 
-		std::sprintf(Str, "%08X", value.Value[i]);
+		std::sprintf(Str, "%08X", value.Value.Value[i - 1]);
 
 		LocalString += Str;
 
-		if (i != Size)
+		if (i != 1)
 		{
 			LocalString += '-';
 		}

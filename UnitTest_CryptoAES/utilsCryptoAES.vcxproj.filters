@@ -8,7 +8,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="..\Lib\utilsCRC_Test.cpp">
+    <ClCompile Include="..\Lib\utilsConverter.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Lib\utilsCryptoAES.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Lib\utilsCryptoAES_Test.cpp">
       <Filter>Lib</Filter>
     </ClCompile>
     <ClCompile Include="..\Lib\utilsTest.cpp">
@@ -16,11 +22,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="devConfig.h" />
-    <ClInclude Include="..\Lib\utilsCRC.h">
+    <ClInclude Include="libConfig.h" />
+    <ClInclude Include="..\Lib\utilsConverter.h">
       <Filter>Lib</Filter>
     </ClInclude>
-    <ClInclude Include="libConfig.h" />
+    <ClInclude Include="..\Lib\utilsCryptoAES.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
     <ClInclude Include="..\Lib\utilsTest.h">
       <Filter>Lib</Filter>
     </ClInclude>
