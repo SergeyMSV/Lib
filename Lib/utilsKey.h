@@ -118,7 +118,7 @@ union tKey32
 {
 	typedef type::tKey1<1> tKeyValue;
 
-	enum { type_key = true };
+	enum { type_key = true , };
 
 	struct
 	{
@@ -129,13 +129,13 @@ union tKey32
 };
 
 template <class T>
-typename std::enable_if<std::is_union<T>::value&& T::type_key, bool>::type operator == (const T& val1, const T& val2)
+typename std::enable_if<std::is_union<T>::value && T::type_key, bool>::type operator == (const T& val1, const T& val2)
 {
 	return std::memcmp(val1.Value.Value, val2.Value.Value, T::tKeyValue::Size) == 0;
 }
 
 template <class T>
-typename std::enable_if<std::is_union<T>::value&& T::type_key, bool>::type operator != (const T& val1, const T& val2)
+typename std::enable_if<std::is_union<T>::value && T::type_key, bool>::type operator != (const T& val1, const T& val2)
 {
 	return std::memcmp(val1.Value.Value, val2.Value.Value, T::tKeyValue::Size) != 0;
 }

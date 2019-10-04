@@ -312,7 +312,7 @@ int GetDataBlockSize(tAES_CYPHER mode)
 	return (4 * g_NB[mode]);
 }
 
-tAES_CYPHER_ERR VerifyKey(tAES_CYPHER mode, const std::vector<char>& key)
+tAES_CYPHER_ERR VerifyKey(tAES_CYPHER mode, const std::vector<char>& key)//[TBD] DEPRECATED
 {
 	tAES_CYPHER_ERR CERR = tAES_CYPHER_ERR_None;
 
@@ -349,7 +349,7 @@ tAES_CYPHER_ERR VerifyKey(tAES_CYPHER mode, const std::vector<char>& key)
 		}
 		default:
 		{
-			CERR = tAES_CYPHER_ERR_Unknown;
+			CERR = tAES_CYPHER_ERR_KeySize;
 
 			break;
 		}
@@ -363,14 +363,11 @@ tAES_CYPHER_ERR VerifyInputECB(tAES_CYPHER mode, const std::vector<char>& data, 
 {
 	tAES_CYPHER_ERR CERR = tAES_CYPHER_ERR_None;
 
-	if (data.size() == 0 || data.size() % (4 * g_NB[mode]))
+	CERR = VerifyKey(mode, key);
+
+	if (CERR == tAES_CYPHER_ERR_None && (data.size() == 0 || data.size() % (4 * g_NB[mode])))
 	{
 		CERR = tAES_CYPHER_ERR_DataSize;
-	}
-
-	if (CERR == tAES_CYPHER_ERR_None)
-	{
-		CERR = VerifyKey(mode, key);
 	}
 
 	return CERR;

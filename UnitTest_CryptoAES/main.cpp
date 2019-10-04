@@ -1,24 +1,14 @@
-#include <iostream>
-#include <string>
-#include <utility>
-
-#include <conio.h>
-#include <time.h>
-
 namespace utils
 {
-	namespace crypto
+	namespace unit_test
 	{
-		namespace AES
-		{
-			void UnitTest();
-		}
+		void UnitTest_CryptoAES();
 	}
 }
-///////////////////////////////////////////////////////////////////////////////////////////////////
-void main()
-{
-	utils::crypto::AES::UnitTest();
 
-	system("pause");
+int main()
+{
+	utils::unit_test::UnitTest_CryptoAES();
+
+	return 0;
 }
