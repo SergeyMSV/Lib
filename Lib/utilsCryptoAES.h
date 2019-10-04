@@ -33,10 +33,19 @@ enum tAES_ECB_CERR
 	tAES_ECB_CERR_Unknown = 0xFF,
 };
 
+enum tAES_CBC_CERR
+{
+	tAES_CBC_CERR_None,
+	tAES_CBC_CERR_DataSize,
+	tAES_CBC_CERR_IVSize,
+
+	tAES_CBC_CERR_Unknown = 0xFF,
+};
+
 		namespace AES
 		{
 
-enum tAES_CYPHER_ERR
+enum tAES_CYPHER_ERR//DEPRECATED
 {
 	tAES_CYPHER_ERR_None,
 	tAES_CYPHER_ERR_KeySize,//[TBD]DEPRECATED
@@ -48,9 +57,9 @@ enum tAES_CYPHER_ERR
 
 enum tAES_CYPHER//used as an index
 {
-	tAES_CYPHER_128,// = 128,
-	tAES_CYPHER_192,// = 192,
-	tAES_CYPHER_256,// = 256,
+	tAES_CYPHER_128,
+	tAES_CYPHER_192,
+	tAES_CYPHER_256,
 };
 
 int GetDataBlockSize(tAES_CYPHER mode);
@@ -116,6 +125,46 @@ typename std::enable_if<AES::IsKeyValid<TKey>(), tAES_ECB_CERR>::type AES_ECB_De
 	}
 
 	return tAES_ECB_CERR_DataSize;
+}
+
+//Cipher Block Chaining (CBC)
+template <class TKey>
+typename std::enable_if<AES::IsKeyValid<TKey>(), tAES_CBC_CERR>::type AES_CBC_Encrypt(const TKey& key, tVectorUInt8& data, const tVectorUInt8& iv)
+{
+	AES::tAES_CYPHER Mode = AES::GetMode<TKey>();
+
+	assert(Mode >= 0 && Mode <= 2);
+
+	/*if (VerifyInputECB(Mode, data))
+	{
+		tVectorUInt8 KeyVector = ToVector(key);
+
+		AES::Encrypt_ECB(Mode, data.data(), data.size(), KeyVector.data());
+
+		return tAES_CBC_CERR_None;
+	}*/
+
+	return tAES_CBC_CERR_DataSize;
+}
+
+//Cipher Block Chaining (CBC)
+template <class TKey>
+typename std::enable_if<AES::IsKeyValid<TKey>(), tAES_CBC_CERR>::type AES_CBC_Decrypt(const TKey& key, tVectorUInt8& data, const tVectorUInt8& iv)
+{
+	AES::tAES_CYPHER Mode = AES::GetMode<TKey>();
+
+	assert(Mode >= 0 && Mode <= 2);
+
+	/*if (VerifyInputECB(Mode, data))
+	{
+		tVectorUInt8 KeyVector = ToVector(key);
+
+		AES::Decrypt_ECB(Mode, data.data(), data.size(), KeyVector.data());
+
+		return tAES_CBC_CERR_None;
+	}*/
+
+	return tAES_CBC_CERR_DataSize;
 }
 
 	}
