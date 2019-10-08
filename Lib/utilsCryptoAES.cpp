@@ -310,92 +310,29 @@ int GetDataBlockSize(tAES_CYPHER mode)
 	return (4 * g_NB[mode]);
 }
 
-tAES_CYPHER_ERR VerifyKey(tAES_CYPHER mode, const std::vector<char>& key)//[TBD] DEPRECATED
+tAES_CERR VerifyInputECB(tAES_CYPHER mode, const tVectorUInt8& data)
 {
-	tAES_CYPHER_ERR CERR = tAES_CYPHER_ERR_None;
-
-	if (CERR == tAES_CYPHER_ERR_None)
-	{
-		switch (mode)
-		{
-		case tAES_CYPHER_128:
-		{
-			if (key.size() != 16)
-			{
-				CERR = tAES_CYPHER_ERR_KeySize;
-			}
-
-			break;
-		}
-		case tAES_CYPHER_192:
-		{
-			if (key.size() != 24)
-			{
-				CERR = tAES_CYPHER_ERR_KeySize;
-			}
-
-			break;
-		}
-		case tAES_CYPHER_256:
-		{
-			if (key.size() != 32)
-			{
-				CERR = tAES_CYPHER_ERR_KeySize;
-			}
-
-			break;
-		}
-		default:
-		{
-			CERR = tAES_CYPHER_ERR_KeySize;
-
-			break;
-		}
-		}
-	}
-
-	return CERR;
-}
-
-bool VerifyInputECB(tAES_CYPHER mode, const tVectorUInt8& data)
-{
-	return data.size() != 0 && !(data.size() % (4 * g_NB[mode]));
-}
-
-tAES_CYPHER_ERR VerifyInputECB(tAES_CYPHER mode, const std::vector<char>& data, const std::vector<char>& key)//[TBD] DEPRECATED
-{
-	tAES_CYPHER_ERR CERR = tAES_CYPHER_ERR_None;
-
-	CERR = VerifyKey(mode, key);//[TBD] not needed
-
-	if (CERR == tAES_CYPHER_ERR_None && (data.size() == 0 || data.size() % (4 * g_NB[mode])))
-	{
-		CERR = tAES_CYPHER_ERR_DataSize;
-	}
-
-	return CERR;
-}
-
-tAES_CYPHER_ERR VerifyInputCBC(tAES_CYPHER mode, std::vector<char>& data, const std::vector<char>& key, const std::vector<char>& iv)
-{
-	tAES_CYPHER_ERR CERR = tAES_CYPHER_ERR_None;
-
 	if (data.size() == 0 || data.size() % (4 * g_NB[mode]))
 	{
-		CERR = tAES_CYPHER_ERR_DataSize;
+		return tAES_CERR_DataSize;
 	}
 
-	if (CERR == tAES_CYPHER_ERR_None && iv.size() != (4 * g_NB[mode]))
+	return tAES_CERR_None;
+}
+
+tAES_CERR VerifyInputCBC(tAES_CYPHER mode, const tVectorUInt8& data, const tVectorUInt8& iv)
+{
+	if (data.size() == 0 || data.size() % (4 * g_NB[mode]))
 	{
-		CERR = tAES_CYPHER_ERR_IVSize;
+		return tAES_CERR_DataSize;
 	}
 
-	if (CERR == tAES_CYPHER_ERR_None)
+	if (iv.size() != (4 * g_NB[mode]))
 	{
-		CERR = VerifyKey(mode, key);
+		return tAES_CERR_IVSize;
 	}
 
-	return CERR;
+	return tAES_CERR_None;
 }
 
 void Encrypt_ECB(tAES_CYPHER mode, unsigned char* data, int len, const unsigned char* key)
@@ -468,21 +405,7 @@ void Encrypt_ECB(tAES_CYPHER mode, unsigned char* data, int len, const unsigned 
 	}
 }
 
-//tAES_CYPHER_ERR EncryptECB(tAES_CYPHER mode, std::vector<char>& data, const std::vector<char>& key)//[TBD]
-//{
-//	tAES_CYPHER_ERR CERR = VerifyInputECB(mode, data, key);
-//
-//	if (CERR == tAES_CYPHER_ERR_None)
-//	{
-//		Encrypt_ECB(mode, (unsigned char*)&data[0], data.size(), (unsigned char*)&key[0]);
-//
-//		return tAES_CYPHER_ERR_None;
-//	}
-//
-//	return CERR;
-//}
-
-tAES_CYPHER_ERR Encrypt_cbc(tAES_CYPHER mode, unsigned char* data, int len, unsigned char* key, unsigned char* iv)
+void Encrypt_CBC(tAES_CYPHER mode, unsigned char* data, int len, const unsigned char* key, const unsigned char* iv)
 {
 	unsigned char w[4 * 4 * 15] = { 0 };//round key
 	unsigned char s[4 * 4] = { 0 };//state
@@ -542,20 +465,6 @@ tAES_CYPHER_ERR Encrypt_cbc(tAES_CYPHER mode, unsigned char* data, int len, unsi
 			data[i + j] = v[j] = s[j];
 		}
 	}
-
-	return tAES_CYPHER_ERR_None;
-}
-
-tAES_CYPHER_ERR EncryptCBC(tAES_CYPHER mode, std::vector<char>& data, const std::vector<char>& key, const std::vector<char>& iv)
-{
-	tAES_CYPHER_ERR CERR = VerifyInputCBC(mode, data, key, iv);
-
-	if (CERR == tAES_CYPHER_ERR_None)
-	{
-		return Encrypt_cbc(mode, (unsigned char*)&data[0], data.size(), (unsigned char*)&key[0], (unsigned char*)&iv[0]);
-	}
-
-	return CERR;
 }
 
 void InvShiftRows(tAES_CYPHER mode, unsigned char* state)
@@ -685,21 +594,7 @@ void Decrypt_ECB(tAES_CYPHER mode, unsigned char* data, int len, const unsigned 
 	}
 }
 
-//tAES_CYPHER_ERR DecryptECB(tAES_CYPHER mode, std::vector<char>& data, const std::vector<char>& key)[TBD]
-//{
-//	tAES_CYPHER_ERR CERR = VerifyInputECB(mode, data, key);
-//
-//	if (CERR == tAES_CYPHER_ERR_None)
-//	{
-//		Decrypt_ECB(mode, (unsigned char*)&data[0], data.size(), (unsigned char*)&key[0]);
-//
-//		return tAES_CYPHER_ERR_None;
-//	}
-//
-//	return CERR;
-//}
-
-tAES_CYPHER_ERR Decrypt_cbc(tAES_CYPHER mode, unsigned char* data, int len, unsigned char* key, unsigned char* iv)
+void Decrypt_CBC(tAES_CYPHER mode, unsigned char* data, int len, const unsigned char* key, const unsigned char* iv)
 {
 	unsigned char w[4 * 4 * 15] = { 0 };//round key
 	unsigned char s[4 * 4] = { 0 };//state
@@ -766,20 +661,6 @@ tAES_CYPHER_ERR Decrypt_cbc(tAES_CYPHER mode, unsigned char* data, int len, unsi
 			data[i + j] = p;
 		}
 	}
-
-	return tAES_CYPHER_ERR_None;
-}
-
-tAES_CYPHER_ERR DecryptCBC(tAES_CYPHER mode, std::vector<char>& data, const  std::vector<char>& key, const std::vector<char>& iv)
-{
-	tAES_CYPHER_ERR CERR = VerifyInputCBC(mode, data, key, iv);
-
-	if (CERR == tAES_CYPHER_ERR_None)
-	{
-		return Decrypt_cbc(mode, (unsigned char*)&data[0], data.size(), (unsigned char*)&key[0], (unsigned char*)&iv[0]);
-	}
-
-	return CERR;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 		}

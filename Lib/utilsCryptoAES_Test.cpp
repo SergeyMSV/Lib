@@ -104,11 +104,11 @@ void UnitTest_ECB(const std::string& testName, const TKey& key, const tVectorUIn
 {
 	tVectorUInt8 DataToEncrypt = dataRaw;
 
-	bool Result = crypto::AES_ECB_Encrypt(key, DataToEncrypt) == crypto::tAES_ECB_CERR_None;
+	bool Result = crypto::AES_Encrypt(key, DataToEncrypt) == crypto::tAES_CERR_None;
 
 	tVectorUInt8 DataToDecrypt = DataToEncrypt;
 
-	Result = Result && crypto::AES_ECB_Decrypt(key, DataToDecrypt) == crypto::tAES_ECB_CERR_None;
+	Result = Result && crypto::AES_Decrypt(key, DataToDecrypt) == crypto::tAES_CERR_None;
 
 	Result = Result &&
 		dataRaw == DataToDecrypt &&
@@ -122,15 +122,52 @@ void UnitTest_ECB(const std::string& testName, const TKey& key, const tVectorUIn
 {
 	tVectorUInt8 DataToEncrypt = dataRaw;
 
-	bool Result = crypto::AES_ECB_Encrypt(key, DataToEncrypt) == crypto::tAES_ECB_CERR_None;
+	bool Result = crypto::AES_Encrypt(key, DataToEncrypt) == crypto::tAES_CERR_None;
 
 	tVectorUInt8 DataToDecrypt = DataToEncrypt;
 
-	Result = Result && crypto::AES_ECB_Decrypt(key, DataToDecrypt) == crypto::tAES_ECB_CERR_None;
+	Result = Result && crypto::AES_Decrypt(key, DataToDecrypt) == crypto::tAES_CERR_None;
 
 	Result = Result &&
 		dataRaw == DataToDecrypt &&
 		DataToEncrypt != DataToDecrypt;
+
+	utils::test::RESULT(testName.c_str(), Result);
+}
+
+template<class TKey>
+void UnitTest_CBC(const std::string& testName, const TKey& key, const std::vector<tVectorUInt8>& data)
+{
+	std::vector<tVectorUInt8> DataToEncrypt = data;
+
+	bool Result = crypto::AES_Encrypt(key, DataToEncrypt[0]) == crypto::tAES_CERR_None;
+
+	tVectorUInt8 IV = DataToEncrypt[0];
+
+	for (int i = 1; i < data.size() && Result; ++i)
+	{
+		Result = Result && crypto::AES_Encrypt(key, DataToEncrypt[i], IV) == crypto::tAES_CERR_None;
+
+		IV = DataToEncrypt[i];
+	}
+
+	std::vector<tVectorUInt8> DataToDecrypt = DataToEncrypt;
+
+	if (Result)
+	{
+		Result = Result && crypto::AES_Decrypt(key, DataToDecrypt[0]) == crypto::tAES_CERR_None;
+	}
+
+	for (int i = 1; i < DataToDecrypt.size() && i < DataToEncrypt.size() && Result; ++i)
+	{
+		IV = DataToEncrypt[i - 1];
+
+		Result = Result && crypto::AES_Decrypt(key, DataToDecrypt[i], IV) == crypto::tAES_CERR_None;
+	}
+
+	Result = Result &&
+		DataToDecrypt == data &&
+		DataToDecrypt != DataToEncrypt;
 
 	utils::test::RESULT(testName.c_str(), Result);
 }
@@ -220,7 +257,7 @@ void UnitTest_CryptoAES()
 			Key.Field.C = 0x42413938;
 			Key.Field.D = 0x46454443;
 
-			bool Result = crypto::AES_ECB_Encrypt(Key, Data) == crypto::tAES_ECB_CERR_DataSize;
+			bool Result = crypto::AES_Encrypt(Key, Data) == crypto::tAES_CERR_DataSize;
 
 			utils::test::RESULT(testName.c_str(), Result);
 		};
@@ -237,7 +274,7 @@ void UnitTest_CryptoAES()
 			Key.Field.C = 0x42413938;
 			Key.Field.D = 0x46454443;
 
-			bool Result = crypto::AES_ECB_Decrypt(Key, const_cast<tVectorUInt8&>(data)) == crypto::tAES_ECB_CERR_DataSize;
+			bool Result = crypto::AES_Decrypt(Key, const_cast<tVectorUInt8&>(data)) == crypto::tAES_CERR_DataSize;
 
 			utils::test::RESULT(testName.c_str(), Result);
 		};
@@ -245,232 +282,71 @@ void UnitTest_CryptoAES()
 		Test_ECB_AES_128("ECB: AES_128 - DecryptECB Data 15 bytes (wrong size)", { 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee });
 	}
 
-
-/*	
-	//Test CBC: AES_128 - Data 16 bytes
 	{
-		char Data_1[] = "QWERTYUIOPASDFGH";//16
-		char Data_2[] = "qwertyuiopasdfgh";//16
-		char Data_3[] = "jklzxcvbnm[]{}:;";//16
-		char Key[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+		std::vector<std::string> VectorString;
+		VectorString.push_back("QWERTYUIOPASDFGH");
+		VectorString.push_back("qwertyuiopasdfgh");
+		VectorString.push_back("jklzxcvbnm[]{}:;");
 
-		std::vector<char> KeyVector(Key, Key + sizeof(Key));
+		std::vector<tVectorUInt8> Data;
 
+		for (auto i : VectorString)
+		{
+			tVectorUInt8 LocalVector(i.cbegin(), i.cend());
 
-		std::vector<char> DataVector_1(Data_1, Data_1 + strlen(Data_1));
+			Data.push_back(LocalVector);
+		}
 
-		std::vector<char> DataVectorEncrypted_1 = DataVector_1;
+		tKey128 Key128;
+		Key128.Field.A = 0x33323130;
+		Key128.Field.B = 0x37363534;
+		Key128.Field.C = 0x42413938;
+		Key128.Field.D = 0x46454443;
 
-		Result = EncryptECB(utils::crypto::AES::tAES_CYPHER_128, DataVectorEncrypted_1, KeyVector) == crypto::AES::tAES_CYPHER_ERR_None;
+		UnitTest_CBC("CBC: AES_128 - Data 16 bytes", Key128, Data);
 
-		std::vector<char> DataVector_2(Data_2, Data_2 + strlen(Data_2));
+		tKey192 Key192;
+		Key192.Field.A = 0x33323130;
+		Key192.Field.B = 0x37363534;
+		Key192.Field.C = 0x42413938;
+		Key192.Field.D = 0x46454443;
+		Key192.Field.E = 0x4A494847;
+		Key192.Field.F = 0x4E4D4C4B;
 
-		std::vector<char> DataVectorEncrypted_2 = DataVector_2;
+		UnitTest_CBC("CBC: AES_192 - Data 16 bytes", Key192, Data);
 
-		Result = EncryptCBC(utils::crypto::AES::tAES_CYPHER_128, DataVectorEncrypted_2, KeyVector, DataVectorEncrypted_1) == crypto::AES::tAES_CYPHER_ERR_None;
+		tKey256 Key256;
+		Key256.Field.A = 0x33323130;
+		Key256.Field.B = 0x37363534;
+		Key256.Field.C = 0x42413938;
+		Key256.Field.D = 0x46454443;
+		Key256.Field.E = 0x4A494847;
+		Key256.Field.F = 0x4E4D4C4B;
+		Key256.Field.G = 0x5251504F;
+		Key256.Field.H = 0x56555453;
 
-		std::vector<char> DataVector_3(Data_3, Data_3 + strlen(Data_3));
-
-		std::vector<char> DataVectorEncrypted_3 = DataVector_3;
-
-		Result = EncryptCBC(utils::crypto::AES::tAES_CYPHER_128, DataVectorEncrypted_3, KeyVector, DataVectorEncrypted_2) == crypto::AES::tAES_CYPHER_ERR_None;
-
-
-		std::vector<char> DataVectorDecrypted_1 = DataVectorEncrypted_1;
-
-		Result = Result && DecryptECB(utils::crypto::AES::tAES_CYPHER_128, DataVectorDecrypted_1, KeyVector) == crypto::AES::tAES_CYPHER_ERR_None;
-
-		std::vector<char> DataVectorDecrypted_2 = DataVectorEncrypted_2;
-
-		Result = Result && DecryptCBC(utils::crypto::AES::tAES_CYPHER_128, DataVectorDecrypted_2, KeyVector, DataVectorEncrypted_1) == crypto::AES::tAES_CYPHER_ERR_None;
-
-		std::vector<char> DataVectorDecrypted_3 = DataVectorEncrypted_3;
-
-		Result = Result && DecryptCBC(utils::crypto::AES::tAES_CYPHER_128, DataVectorDecrypted_3, KeyVector, DataVectorEncrypted_2) == crypto::AES::tAES_CYPHER_ERR_None;
-
-
-		Result = Result &&
-			DataVector_1 == DataVectorDecrypted_1 && DataVector_1 != DataVectorEncrypted_1 &&
-			DataVector_2 == DataVectorDecrypted_2 && DataVector_2 != DataVectorEncrypted_2 &&
-			DataVector_3 == DataVectorDecrypted_3 && DataVector_3 != DataVectorEncrypted_3;
-
-		utils::test::RESULT("CBC: AES_128 - Data 16 bytes", Result);
+		UnitTest_CBC("CBC: AES_256 - Data 16 bytes", Key192, Data);
 	}
 
-	//Test CBC: AES_192 - Data 16 bytes
 	{
-		char Data_1[] = "QWERTYUIOPASDFGH";//16
-		char Data_2[] = "qwertyuiopasdfgh";//16
-		char Data_3[] = "jklzxcvbnm[]{}:;";//16
-		char Key[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C' };
+		tVectorUInt8 Data{ 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff };
 
-		std::vector<char> KeyVector(Key, Key + sizeof(Key));
+		tKey128 Key;
+		Key.Field.A = 0x03020100;
+		Key.Field.B = 0x07060504;
+		Key.Field.C = 0x0B0A0908;
+		Key.Field.D = 0x0F0E0D0C;
 
+		tVectorUInt8 IV(15, 0);
 
-		std::vector<char> DataVector_1(Data_1, Data_1 + strlen(Data_1));
-
-		std::vector<char> DataVectorEncrypted_1 = DataVector_1;
-
-		Result = EncryptECB(utils::crypto::AES::tAES_CYPHER_192, DataVectorEncrypted_1, KeyVector) == crypto::AES::tAES_CYPHER_ERR_None;
-
-		std::vector<char> DataVector_2(Data_2, Data_2 + strlen(Data_2));
-
-		std::vector<char> DataVectorEncrypted_2 = DataVector_2;
-
-		Result = EncryptCBC(utils::crypto::AES::tAES_CYPHER_192, DataVectorEncrypted_2, KeyVector, DataVectorEncrypted_1) == crypto::AES::tAES_CYPHER_ERR_None;
-
-		std::vector<char> DataVector_3(Data_3, Data_3 + strlen(Data_3));
-
-		std::vector<char> DataVectorEncrypted_3 = DataVector_3;
-
-		Result = EncryptCBC(utils::crypto::AES::tAES_CYPHER_192, DataVectorEncrypted_3, KeyVector, DataVectorEncrypted_2) == crypto::AES::tAES_CYPHER_ERR_None;
-
-
-		std::vector<char> DataVectorDecrypted_1 = DataVectorEncrypted_1;
-
-		Result = Result && DecryptECB(utils::crypto::AES::tAES_CYPHER_192, DataVectorDecrypted_1, KeyVector) == crypto::AES::tAES_CYPHER_ERR_None;
-
-		std::vector<char> DataVectorDecrypted_2 = DataVectorEncrypted_2;
-
-		Result = Result && DecryptCBC(utils::crypto::AES::tAES_CYPHER_192, DataVectorDecrypted_2, KeyVector, DataVectorEncrypted_1) == crypto::AES::tAES_CYPHER_ERR_None;
-
-		std::vector<char> DataVectorDecrypted_3 = DataVectorEncrypted_3;
-
-		Result = Result && DecryptCBC(utils::crypto::AES::tAES_CYPHER_192, DataVectorDecrypted_3, KeyVector, DataVectorEncrypted_2) == crypto::AES::tAES_CYPHER_ERR_None;
-
-
-		Result = Result &&
-			DataVector_1 == DataVectorDecrypted_1 && DataVector_1 != DataVectorEncrypted_1 &&
-			DataVector_2 == DataVectorDecrypted_2 && DataVector_2 != DataVectorEncrypted_2 &&
-			DataVector_3 == DataVectorDecrypted_3 && DataVector_3 != DataVectorEncrypted_3;
-
-		utils::test::RESULT("CBC: AES_192 - Data 16 bytes", Result);
-	}
-
-	//Test CBC: AES_256 - Data 16 bytes
-	{
-		char Data_1[] = "QWERTYUIOPASDFGH";//16
-		char Data_2[] = "qwertyuiopasdfgh";//16
-		char Data_3[] = "jklzxcvbnm[]{}:;";//16
-		char Key[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c' };
-
-		std::vector<char> KeyVector(Key, Key + sizeof(Key));
-
-
-		std::vector<char> DataVector_1(Data_1, Data_1 + strlen(Data_1));
-
-		std::vector<char> DataVectorEncrypted_1 = DataVector_1;
-
-		Result = EncryptECB(utils::crypto::AES::tAES_CYPHER_256, DataVectorEncrypted_1, KeyVector) == crypto::AES::tAES_CYPHER_ERR_None;
-
-		std::vector<char> DataVector_2(Data_2, Data_2 + strlen(Data_2));
-
-		std::vector<char> DataVectorEncrypted_2 = DataVector_2;
-
-		Result = EncryptCBC(utils::crypto::AES::tAES_CYPHER_256, DataVectorEncrypted_2, KeyVector, DataVectorEncrypted_1) == crypto::AES::tAES_CYPHER_ERR_None;
-
-		std::vector<char> DataVector_3(Data_3, Data_3 + strlen(Data_3));
-
-		std::vector<char> DataVectorEncrypted_3 = DataVector_3;
-
-		Result = EncryptCBC(utils::crypto::AES::tAES_CYPHER_256, DataVectorEncrypted_3, KeyVector, DataVectorEncrypted_2) == crypto::AES::tAES_CYPHER_ERR_None;
-
-
-		std::vector<char> DataVectorDecrypted_1 = DataVectorEncrypted_1;
-
-		Result = Result && DecryptECB(utils::crypto::AES::tAES_CYPHER_256, DataVectorDecrypted_1, KeyVector) == crypto::AES::tAES_CYPHER_ERR_None;
-
-		std::vector<char> DataVectorDecrypted_2 = DataVectorEncrypted_2;
-
-		Result = Result && DecryptCBC(utils::crypto::AES::tAES_CYPHER_256, DataVectorDecrypted_2, KeyVector, DataVectorEncrypted_1) == crypto::AES::tAES_CYPHER_ERR_None;
-
-		std::vector<char> DataVectorDecrypted_3 = DataVectorEncrypted_3;
-
-		Result = Result && DecryptCBC(utils::crypto::AES::tAES_CYPHER_256, DataVectorDecrypted_3, KeyVector, DataVectorEncrypted_2) == crypto::AES::tAES_CYPHER_ERR_None;
-
-
-		Result = Result &&
-			DataVector_1 == DataVectorDecrypted_1 && DataVector_1 != DataVectorEncrypted_1 &&
-			DataVector_2 == DataVectorDecrypted_2 && DataVector_2 != DataVectorEncrypted_2 &&
-			DataVector_3 == DataVectorDecrypted_3 && DataVector_3 != DataVectorEncrypted_3;
-
-		utils::test::RESULT("CBC: AES_256 - Data 16 bytes", Result);
-	}
-
-	//Test CBC: AES_128 - Data 16 bytes, Encrypt IV 15 bytes (wrong size IV)
-	{
-		char Data_1[] = "QWERTYUIOPASDFGH";//16
-		char Data_2[] = "qwertyuiopasdfgh";//16
-		char Key[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-
-		std::vector<char> KeyVector(Key, Key + sizeof(Key));
-
-
-		std::vector<char> DataVector_1(Data_1, Data_1 + strlen(Data_1));
-
-		std::vector<char> DataVectorEncrypted_1 = DataVector_1;
-
-		Result = EncryptECB(utils::crypto::AES::tAES_CYPHER_128, DataVectorEncrypted_1, KeyVector) == crypto::AES::tAES_CYPHER_ERR_None;
-
-		std::vector<char> DataVector = std::vector<char>(DataVectorEncrypted_1.begin(), DataVectorEncrypted_1.end() - 1);
-
-		std::vector<char> DataVector_2(Data_2, Data_2 + strlen(Data_2));
-
-		std::vector<char> DataVectorEncrypted_2 = DataVector_2;
-
-		Result = EncryptCBC(utils::crypto::AES::tAES_CYPHER_128, DataVectorEncrypted_2, KeyVector, DataVector) == crypto::AES::tAES_CYPHER_ERR_IVSize;
-
-
-		std::vector<char> DataVectorDecrypted_1 = DataVectorEncrypted_1;
-
-		Result = Result && DecryptECB(utils::crypto::AES::tAES_CYPHER_128, DataVectorDecrypted_1, KeyVector) == crypto::AES::tAES_CYPHER_ERR_None;
-
-		std::vector<char> DataVectorDecrypted_2 = DataVectorEncrypted_2;
-
-		Result = Result && DecryptCBC(utils::crypto::AES::tAES_CYPHER_128, DataVectorDecrypted_2, KeyVector, DataVectorEncrypted_1) == crypto::AES::tAES_CYPHER_ERR_None;
-
+		bool Result = crypto::AES_Encrypt(Key, Data, IV) == crypto::tAES_CERR_IVSize;
 
 		utils::test::RESULT("CBC: AES_128 - Data 16 bytes, Encrypt IV 15 bytes (wrong size IV)", Result);
-	}
 
-	//Test CBC: AES_128 - Data 16 bytes, Decrypt IV 15 bytes (wrong size IV)
-	{
-		char Data_1[] = "QWERTYUIOPASDFGH";//16
-		char Data_2[] = "qwertyuiopasdfgh";//16
-		char Key[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-
-		std::vector<char> KeyVector(Key, Key + sizeof(Key));
-
-
-		std::vector<char> DataVector_1(Data_1, Data_1 + strlen(Data_1));
-
-		std::vector<char> DataVectorEncrypted_1 = DataVector_1;
-
-		Result = EncryptECB(utils::crypto::AES::tAES_CYPHER_128, DataVectorEncrypted_1, KeyVector) == crypto::AES::tAES_CYPHER_ERR_None;
-
-		
-		std::vector<char> DataVector_2(Data_2, Data_2 + strlen(Data_2));
-
-		std::vector<char> DataVectorEncrypted_2 = DataVector_2;
-
-		std::vector<char> DataVector;
-
-		Result = EncryptCBC(utils::crypto::AES::tAES_CYPHER_128, DataVectorEncrypted_2, KeyVector, DataVector) == crypto::AES::tAES_CYPHER_ERR_IVSize;
-
-
-		std::vector<char> DataVectorDecrypted_1 = DataVectorEncrypted_1;
-
-		Result = Result && DecryptECB(utils::crypto::AES::tAES_CYPHER_128, DataVectorDecrypted_1, KeyVector) == crypto::AES::tAES_CYPHER_ERR_None;
-
-		DataVector = std::vector<char>(DataVectorEncrypted_1.begin(), DataVectorEncrypted_1.end() - 1);
-
-		std::vector<char> DataVectorDecrypted_2 = DataVectorEncrypted_2;
-
-		Result = Result && DecryptCBC(utils::crypto::AES::tAES_CYPHER_128, DataVectorDecrypted_2, KeyVector, DataVector) == crypto::AES::tAES_CYPHER_ERR_IVSize;
-
+		Result = crypto::AES_Decrypt(Key, Data, IV) == crypto::tAES_CERR_IVSize;
 
 		utils::test::RESULT("CBC: AES_128 - Data 16 bytes, Decrypt IV 15 bytes (wrong size IV)", Result);
-	}*/
+	}
 
 
 	std::cout<<std::endl;
