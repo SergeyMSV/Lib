@@ -6,11 +6,6 @@ namespace utils
 	{
 		namespace RSA32
 		{
-///////////////////////////////////////////////////////////////////////////////////////////////////
-//bool ExtBinEuclid_IsEven(int x) { return (x & 0x01) == 0; }
-//bool ExtBinEuclid_IsOdd(int x) { return x & 0x01; }
-//void ExtBinEuclid_Swap(int &x, int &y) { x ^= y; y ^= x; x ^= y; }
-//bool ExtBinEuclid(int *u, int *v, int *u1, int *u2, int *u3);
 
 int ExtEuclid(int a, int mod)
 {
@@ -126,115 +121,45 @@ int GetPrivateKey(int e, int a, int &gcd)
 	return ExtEuclid(e, a);
 }
 
-std::vector<int> Encrypt(std::vector<int>& msg, int key, int mod)
+	}
+
+std::vector<int> RSA32_Encrypt(std::vector<int>& msg, tKey32 key, tKey32 mod)
 {
-	std::vector<int> Res;//[!!!]it's possible to set its size in advance
+	std::vector<int> Res;
 
-	int Length = msg.size();
+	size_t Size = msg.size();
 
-	for (int i = 0; i < Length; ++i)
+	Res.reserve(Size * 2);
+
+	for (size_t i = 0; i < Size; ++i)
 	{
-		Res.push_back(Qe2(((msg[i] >> 16) & 0x0000FFFF), key, mod));
+		Res.push_back(RSA32::Qe2(((msg[i] >> 16) & 0x0000FFFF), key.Field.A, static_cast<int>(mod.Field.A)));
 
-		Res.push_back(Qe2(msg[i] & 0x0000FFFF, key, mod));
+		Res.push_back(RSA32::Qe2(msg[i] & 0x0000FFFF, key.Field.A, static_cast<int>(mod.Field.A)));
 	}
 
 	return Res;
 }
 
-std::vector<int> Decrypt(std::vector<int>& msg, int key, int mod)
+std::vector<int> RSA32_Decrypt(std::vector<int>& msg, tKey32 key, tKey32 mod)
 {
-	std::vector<int> Res;//[!!!]it's possible to set its size in advance
+	std::vector<int> Res;
 
-	int Length = msg.size();
+	size_t Size = msg.size();
 
-	for (int i = 0; i < Length; i += 2)
+	Res.reserve(Size / 2);
+
+	for (size_t i = 0; i < Size; i += 2)
 	{	
-		int Value = Qe2(msg[i], key, mod) << 16;
+		int Value = RSA32::Qe2(msg[i], key.Field.A, static_cast<int>(mod.Field.A)) << 16;
 
-		Value |= Qe2(msg[i + 1], key, mod);
+		Value |= RSA32::Qe2(msg[i + 1], key.Field.A, static_cast<int>(mod.Field.A));
 
 		Res.push_back(Value);
 	}
 
 	return Res;
 }
-///////////////////////////////////////////////////////////////////////////////////////////////////
-		}
+
 	}
 }
-
-/*
-//a * x + b * y = gcd(a, b) = d
-bool tChipherRSA::ExtBinEuclid(int *u, int *v, int *u1, int *u2, int *u3)
-{//-Warning: u and v will be swapped if u < v
-	if (*u < *v)
-		ExtBinEuclid_Swap(*u, *v);
-		//return false;
-
-	int k = 0;
-
-	for (; ExtBinEuclid_IsEven(*u) && ExtBinEuclid_IsEven(*v); ++k)
-	{
-		*u >>= 1;
-		*v >>= 1;
-	}
-
-	*u1 = 1;
-	*u2 = 0;
-	*u3 = *u;
-
-	int T1 = *v;
-	int T2 = *u - 1;
-	int T3 = *v;
-
-	do
-	{
-		do
-		{
-			if (ExtBinEuclid_IsEven(*u3))
-			{
-				if (ExtBinEuclid_IsOdd(*u1) || ExtBinEuclid_IsOdd(*u2))
-				{
-					*u1 += *v;
-					*u2 += *u;
-				}
-
-				*u1 >>= 1;
-				*u2 >>= 1;
-				*u3 >>= 1;
-			}
-
-			if (ExtBinEuclid_IsEven(T3) || *u3 < T3)
-			{
-				ExtBinEuclid_Swap(*u1, T1);
-				ExtBinEuclid_Swap(*u2, T2);
-				ExtBinEuclid_Swap(*u3, T3);
-			}
-		}
-		while(ExtBinEuclid_IsEven(*u3));
-
-		while (*u1 < T1 || *u2 < T2)
-		{
-			*u1 += *v;
-			*u2 += *u;
-		}
-
-		*u1 -= T1;
-		*u2 -= T2;
-		*u3 -= T3;
-	}
-	while (T3 > 0);
-
-	while (*u1 >= *v && *u2 >= *u)
-	{
-		*u1 -= *v;
-		*u2 -= *u;
-	}
-
-	*u1 <<= k;
-	*u2 <<= k;
-	*u3 <<= k;
-
-	return true;
-}*/

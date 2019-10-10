@@ -1,3 +1,4 @@
+#include "utilsBase.h"
 #include "utilsCryptoRSA32.h"
 #include "utilsTest.h"
 
@@ -10,12 +11,10 @@
 
 namespace utils
 {
-	namespace crypto
+	namespace unit_test
 	{
-		namespace RSA32
-		{
 
-std::vector<int> ToVector32(char* data, int dataSize)
+std::vector<int> ToVector32(const char* data, int dataSize)
 {
 	std::vector<int> Vector32;
 
@@ -70,47 +69,40 @@ std::string ToString(std::vector<int>& data)
 	return Vector32;
 }
 
-void UnitTest()
+void UnitTest_CryptoRSA32()
 {
-	std::cout<<"\n\n""utils::crypto::RSA32::UnitTest"<<std::endl;
+	std::cout<<"\n""utils::crypto::RSA32"<<std::endl;
 
-	char *DataArray = 0;
-	std::vector<int> DataVector;
+	{
+		tKey32 PublicKeyN;
+		PublicKeyN.Field.A = 0x015ac7bb;
 
-	char *PacketArray = 0;
-	char *PayloadArray = 0;
-	std::vector<char> PacketVector;
-	std::vector<char> Payload;
-	bool Result = false;
+		tKey32 PublicKeyE;
+		PublicKeyE.Field.A = 0x00009467;
 
-	//tPacket Packet;
+		std::string DataStr = "`1234567890-=qwertyuiop[]asdfghjkl;'zxcvbnm,./~!@##$%^^&*()_+QWERTYUIOPASDFGHJKLZXCVBNMöóêåíãøùçõúôûâàïğîëäæıÿ÷ñìèòüáşÉÖÓÊÅÍÃØÙÇÕÚÔÛÂÀÏĞÎËÄÆİß×ÑÌÈÒÜÁŞ";
 
-	int PublicKeyN = 0x015ac7bb;//RSA KEY
-	int PublicKeyE = 0x00009467;//RSA KEY
+		std::vector<int> DataVector = ToVector32(DataStr.data(), DataStr.size());
 
-	//Test Parse: Just a packet
+		std::vector<int> EncryptedMsg = utils::crypto::RSA32_Encrypt(DataVector, PublicKeyE, PublicKeyN);
 
-	char DataParse_1[] = "`1234567890-=qwertyuiop[]asdfghjkl;'zxcvbnm,./~!@##$%^^&*()_+QWERTYUIOPASDFGHJKLZXCVBNMöóêåíãøùçõúôûâàïğîëäæıÿ÷ñìèòüáşÉÖÓÊÅÍÃØÙÇÕÚÔÛÂÀÏĞÎËÄÆİß×ÑÌÈÒÜÁŞ";
+		std::vector<int> DecryptedMsg = utils::crypto::RSA32_Decrypt(EncryptedMsg, PublicKeyE, PublicKeyN);
 
-	DataVector = ToVector32(DataParse_1, sizeof(DataParse_1));
+		std::string DataStr2 = ToString(DecryptedMsg);
 
-	std::vector<int> EncryptedMsg = utils::crypto::RSA32::Encrypt(DataVector, PublicKeyE, PublicKeyN);
+		//std::cout << DataStr << std::endl;
+		//std::cout << DataStr2 << std::endl;
 
-	std::vector<int> DecryptedMsg = utils::crypto::RSA32::Decrypt(EncryptedMsg, PublicKeyE, PublicKeyN);
+		bool Result = 
+			DataVector == DecryptedMsg &&
+			EncryptedMsg != DecryptedMsg;
 
-	std::string DataParse_1_String = ToString(DecryptedMsg);
-
-	std::cout << DataParse_1 << std::endl;
-	std::cout << DataParse_1_String << std::endl;
-
-	Result = DataVector == DecryptedMsg;
-
-	utils::test::RESULT("Parse: Just a packet", Result);
+		utils::test::RESULT("Parse: Just a packet", Result);
+	}
 
 
 	std::cout<<std::endl;
 }
 
-		}
 	}
 }

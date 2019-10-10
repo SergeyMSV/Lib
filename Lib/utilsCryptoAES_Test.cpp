@@ -174,7 +174,7 @@ void UnitTest_CBC(const std::string& testName, const TKey& key, const std::vecto
 
 void UnitTest_CryptoAES()
 {
-	std::cout << "\n\n""utils::crypto::AES" << std::endl;
+	std::cout << "\n""utils::crypto::AES" << std::endl;
 
 #ifdef LIB_UTILS_CRYPTO_AES_LOG
 	aes_cypher_128_test();

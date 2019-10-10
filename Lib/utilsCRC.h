@@ -1,10 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // utilsCRC
 //
-// Created by Sergey Maslennikov
-// Tel.:   
-// E-mail: maslennikovserge@yandex.ru
-//
 // Standard ISO/IEC 114882, C++98
 //
 // |   version  |    release    | Description
