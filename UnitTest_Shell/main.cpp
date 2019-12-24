@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <time.h>
 
-extern const utils::shell::tShellCommandList ShellCommandList[];
+extern const std::vector<utils::shell::tShellCommandList> g_ShellCommandList;
 
 class tDevShell;
 
@@ -17,8 +17,8 @@ tDevShell* g_pDevShell = nullptr;
 class tDevShell : public utils::shell::tShell
 {
 public:
-	explicit tDevShell(const utils::shell::tShellCommandList* cmdList)
-		:utils::shell::tShell(cmdList)
+	explicit tDevShell(const utils::shell::tShellCommandList* cmdList, std::size_t cmdListSize)
+		:utils::shell::tShell(cmdList, cmdListSize)
 	{
 		g_pDevShell = this;
 
@@ -49,14 +49,14 @@ public:
 		{
 			const char MenuFormat[] = " %-20s %s\n";
 
-			for (unsigned int i = 0; i < LIB_UTILS_SHELL_MENU_ITEM_QTY_MAX; ++i)
+			for (unsigned int i = 0; i < g_ShellCommandList.size(); ++i)
 			{
-				if (ShellCommandList[i].Command == 0)
+				if (g_ShellCommandList[i].Command == 0)
 				{
 					break;
 				}
 
-				if (ShellCommandList[i].Command[0] == '~')//Hidden line
+				if (g_ShellCommandList[i].Command[0] == '~')//Hidden line
 				{
 					////////////////////////////////
 					//Hidden menu
@@ -66,7 +66,7 @@ public:
 				}
 				else
 				{
-					printf(MenuFormat, ShellCommandList[i].Command, ShellCommandList[i].Description);
+					printf(MenuFormat, g_ShellCommandList[i].Command, g_ShellCommandList[i].Description);
 				}
 			}
 
@@ -148,7 +148,7 @@ private:
 
 bool tDevShell::Debug = false;
 
-const utils::shell::tShellCommandList ShellCommandList[] =
+const std::vector<utils::shell::tShellCommandList> g_ShellCommandList
 {
 	{ (char*)"help",   (char*)"blablabla", tDevShell::Handler1 },
 	{ (char*)"?",      (char*)"la-la-la",  tDevShell::Handler2 },
@@ -160,7 +160,7 @@ const utils::shell::tShellCommandList ShellCommandList[] =
 
 int main()
 {
-	tDevShell Shell(ShellCommandList);
+	tDevShell Shell(g_ShellCommandList.data(), g_ShellCommandList.size());
 
 	while (true)
 	{
