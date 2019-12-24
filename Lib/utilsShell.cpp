@@ -5,11 +5,10 @@ namespace utils
 	namespace shell
 	{
 
-tShell::tShell(const tShellCommandList *cmdList, bool echo)
+tShell::tShell(const tShellCommandList *cmdList, std::size_t cmdListSize, bool echo)
+	:p_CmdList(cmdList), m_CmdListSize(cmdListSize), m_EchoEnabled(echo)
 {
-	p_CmdList = (tShellCommandList*)cmdList;
 
-	m_EchoEnabled = echo;
 }
 
 tShell::~tShell()
@@ -78,7 +77,7 @@ void tShell::Board_OnReceived(char data)
 	}
 	else if (data >= 0x20 && data <= 0x7E)
 	{
-		if (m_CharQueue.size() < LIB_UTILS_SHELL_QUEUE_SIZE)
+		if (m_CharQueue.size() < m_CharQueueSize)
 		{
 			m_CharQueue.push_back(data);
 
@@ -102,7 +101,7 @@ void tShell::OnReceivedCmd(const std::vector<std::string>& data) const
 {
 	if (p_CmdList && data.size() > 0)
 	{
-		for (unsigned int i = 0; i < LIB_UTILS_SHELL_MENU_ITEM_QTY_MAX; ++i)
+		for (std::size_t i = 0; i < m_CmdListSize; ++i)
 		{
 			if (p_CmdList[i].Command == nullptr)
 			{

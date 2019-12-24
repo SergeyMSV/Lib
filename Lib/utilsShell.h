@@ -41,16 +41,20 @@ class tShell
 {
 	std::deque<char> m_CharQueue;
 
+	const std::size_t m_CharQueueSize = 50;
+
 	std::vector<std::string> m_CmdLine;
 
-	tShellCommandList *p_CmdList = nullptr;
+	const tShellCommandList *p_CmdList = nullptr;
+
+	const std::size_t m_CmdListSize = 0;
 
 	bool m_EchoEnabled = false;
 
 	tShell() = delete;
 
 public:
-	explicit tShell(const tShellCommandList* cmdList, bool echo = false);
+	tShell(const tShellCommandList* cmdList, std::size_t cmdListSize, bool echo = false);
 	virtual ~tShell();
 
 	void SetEcho(bool enabled);
