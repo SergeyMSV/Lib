@@ -11,8 +11,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include <stdlib.h>
-#include <string.h>
+#include <cassert>
+#include <cstdlib>
+#include <cstring>
 
 #include <algorithm>
 #include <vector>
@@ -21,6 +22,7 @@ namespace utils
 {
 
 typedef unsigned char tUInt8;
+typedef unsigned int tUInt32;
 typedef std::vector<tUInt8> tVectorUInt8;
 
 template<typename T>
@@ -52,7 +54,7 @@ typename std::enable_if<std::is_trivially_copyable<T>::value, T>::type Read(Iter
 
 	auto Size = std::distance(first, last);
 
-	if (Size <= sizeof(T))
+	if (Size > 0 && Size <= static_cast<int>(sizeof(T)))
 	{
 		std::copy(first, last, reinterpret_cast<tUInt8*>(&Data));
 	}
@@ -61,13 +63,13 @@ typename std::enable_if<std::is_trivially_copyable<T>::value, T>::type Read(Iter
 }
 
 template<typename T>
-typename std::enable_if<std::is_trivially_copyable<T>::value, T>::type Read(const char* data, size_t dataSize)
+typename std::enable_if<std::is_trivially_copyable<T>::value, T>::type Read(const char* data, std::size_t dataSize)
 {
 	return Read<T, const char*>(data, data + dataSize);
 }
 
 template<typename T>
-typename std::enable_if<std::is_trivially_copyable<T>::value, T>::type Read(const unsigned char* data, size_t dataSize)
+typename std::enable_if<std::is_trivially_copyable<T>::value, T>::type Read(const unsigned char* data, std::size_t dataSize)
 {
 	const char* Begin = reinterpret_cast<const char*>(data);
 
@@ -85,15 +87,15 @@ typename std::enable_if<std::is_trivially_copyable<T>::value, T>::type Read(Iter
 {
 	char Str[N];//[#] and +/- and 0x00
 
-	int StrIndex = 0;
+	unsigned int StrIndex = 0;
 
 	for (; first != last && StrIndex < sizeof(Str) - 1; ++first)
 	{
 		char Byte = static_cast<char>(*first);
 
-		if (Byte >= '0' && Byte <= '9' ||
-			radix == tRadix_10 && Byte == '-' && StrIndex == 0 ||
-			radix == tRadix_16 && (Byte >= 'A' && Byte <= 'F' || Byte >= 'a' && Byte <= 'f'))
+		if ((Byte >= '0' && Byte <= '9') ||
+			(radix == tRadix_10 && Byte == '-' && StrIndex == 0) ||
+			(radix == tRadix_16 && ((Byte >= 'A' && Byte <= 'F') || (Byte >= 'a' && Byte <= 'f'))))
 		{
 			Str[StrIndex++] = Byte;
 		}
@@ -116,7 +118,7 @@ typename std::enable_if<std::is_trivially_copyable<T>::value, T>::type Read(Iter
 template<typename T>
 typename std::enable_if<std::is_trivially_copyable<T>::value, T>::type Read(const char* data, tRadix radix)
 {
-	size_t DataSize = strlen(data);
+	std::size_t DataSize = strlen(data);
 
 	return Read<T, const char*>(data, data + DataSize, radix);
 }
@@ -129,6 +131,49 @@ typename std::enable_if<std::is_trivially_copyable<T>::value, T>::type Reverse(T
 	std::reverse<tUInt8*>(Begin, Begin + sizeof(value));
 
 	return value;
+}
+
+namespace type
+{
+
+template <unsigned int size>
+struct tArray1
+{
+	enum { Size = size };
+	tUInt8 Value[size];
+
+	//tArray1() in union it's deleted by default
+	//{
+	//	std::memset(Value, 0, Size);
+	//}
+
+	tUInt8& operator [] (std::size_t i)
+	{
+		assert(i < Size);
+
+		return Value[i];
+	}
+
+	bool operator == (const tArray1& value)
+	{
+		return std::memcmp(Value, value.Value, Size) == 0;
+	}
+
+	bool operator != (const tArray1& value)
+	{
+		return std::memcmp(Value, value.Value, Size) != 0;
+	}
+};
+
+template <unsigned int size>
+struct tArray2 : public tArray1<size>
+{
+	tArray2()
+	{
+		std::memset(this->Value, 0, this->Size);
+	}
+};
+
 }
 
 //char FromBCD(char dataBCD); [TBD]
