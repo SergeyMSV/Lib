@@ -1,9 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// utilsTest
+// utilsTest.h
 //
-// Created by Sergey Maslennikov
-// Tel.:   
-// E-mail: maslennikovserge@yandex.ru
+// Standard ISO/IEC 114882, C++17
 //
 // |   version  |    release    | Description
 // |------------|---------------|---------------------------------
@@ -11,8 +9,7 @@
 // |      1b    |   2019 09 05  | Updated
 // |            |               | 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-#ifndef LIB_UTILS_TEST_H
-#define LIB_UTILS_TEST_H
+#pragma once
 
 #include <libConfig.h>
 
@@ -27,5 +24,3 @@ void WARNING(const char* msg, bool show = true);
 
 	}
 }
-
-#endif//LIB_UTILS_TEST_H
