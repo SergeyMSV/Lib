@@ -8,6 +8,9 @@ namespace utils
 	namespace unit_test
 	{
 
+const char UnitTest_Trap_Msg[] = "\xd\xa""CLOSED\xd\xa";
+const char UnitTest_Trap_Msg_R[] = "\xa\xd""DESOLC\xa\xd";
+
 void UnitTest_Trap()
 {
 	std::cout<<"\n\n""utils::trap::tTrap"<<std::endl;
@@ -16,9 +19,7 @@ void UnitTest_Trap()
 
 	//Test: The same
 	{
-		static const char Msg[] = "\xd\xa""CLOSED\xd\xa";
-
-		tTrap<Msg, sizeof(Msg) - 1> Trap;
+		tTrap<UnitTest_Trap_Msg, sizeof(UnitTest_Trap_Msg) - 1> Trap;
 
 		char Data[] = "\xd\xa""CLOSED\xd\xa";
 
@@ -31,9 +32,7 @@ void UnitTest_Trap()
 
 	//Test: Reverse
 	{
-		static const char Msg[] = "\xa\xd""DESOLC\xa\xd";
-
-		tTrap<Msg, sizeof(Msg) - 1, true> Trap;
+		tTrap<UnitTest_Trap_Msg_R, sizeof(UnitTest_Trap_Msg_R) - 1, true> Trap;
 
 		char Data[] = "\xd\xa""CLOSED\xd\xa";
 
@@ -46,9 +45,7 @@ void UnitTest_Trap()
 
 	//Test: 0x0D + the same
 	{
-		static const char Msg[] = "\xd\xa""CLOSED\xd\xa";
-
-		tTrap<Msg, sizeof(Msg) - 1> Trap;
+		tTrap<UnitTest_Trap_Msg, sizeof(UnitTest_Trap_Msg) - 1> Trap;
 
 		char Data[] = "\xd\xd\xa""CLOSED\xd\xa";
 
@@ -61,9 +58,7 @@ void UnitTest_Trap()
 
 	//Test: 0x0D + 0x0D + the same
 	{
-		static const char Msg[] = "\xd\xa""CLOSED\xd\xa";
-
-		tTrap<Msg, sizeof(Msg) - 1> Trap;
+		tTrap<UnitTest_Trap_Msg, sizeof(UnitTest_Trap_Msg) - 1> Trap;
 
 		char Data[] = "\xd\xd\xd\xa""CLOSED\xd\xa";
 
@@ -77,9 +72,7 @@ void UnitTest_Trap()
 
 	//Test: No first 0x0D
 	{
-		static const char Msg[] = "\xd\xa""CLOSED\xd\xa";
-
-		tTrap<Msg, sizeof(Msg) - 1> Trap;
+		tTrap<UnitTest_Trap_Msg, sizeof(UnitTest_Trap_Msg) - 1> Trap;
 
 		char Data[] = "\xa""CLOSED\xd\xa";
 
@@ -92,9 +85,7 @@ void UnitTest_Trap()
 
 	//Test: 0x0D + 0x0D + the same + rubbush
 	{
-		static const char Msg[] = "\xd\xa""CLOSED\xd\xa";
-
-		tTrap<Msg, sizeof(Msg) - 1> Trap;
+		tTrap<UnitTest_Trap_Msg, sizeof(UnitTest_Trap_Msg) - 1> Trap;
 
 		char Data[] = "\xd\xd\xd\xa""CLOSED\xd\xa""CLOX";
 
@@ -107,9 +98,7 @@ void UnitTest_Trap()
 
 	//Test: 0x0D + 0x0D + rubbish + the same + rubbush
 	{
-		static const char Msg[] = "\xd\xa""CLOSED\xd\xa";
-
-		tTrap<Msg, sizeof(Msg) - 1> Trap;
+		tTrap<UnitTest_Trap_Msg, sizeof(UnitTest_Trap_Msg) - 1> Trap;
 
 		char Data[] = "\xd\xd\xd\xa""CLO""\xd\xa""CLOSED\xd\xa""CLOX";
 

@@ -23,10 +23,10 @@ namespace utils
 	namespace trap
 	{
 
-template <const char * const Data, int DataSize, bool DataReverse = false>
+template <const char * Data, std::size_t DataSize, bool DataReverse = false>
 class tTrap
 {
-	int m_DataIndex = 0;
+	std::size_t m_DataIndex = 0;
 
 public:
 	bool Try(std::vector<char>& data)
