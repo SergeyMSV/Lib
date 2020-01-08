@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // utilsShell.h
 //
-// Standard ISO/IEC 114882, C++17
+// Standard ISO/IEC 114882, C++14
 //
 // |   version  |    release    | Description
 // |------------|---------------|---------------------------------
@@ -51,7 +51,7 @@ class tShell
 
 	bool m_EchoEnabled = false;
 
-	tShell() = delete;
+	tShell() { };
 
 public:
 	tShell(const tShellCommandList* cmdList, std::size_t cmdListSize, bool echo = false);
