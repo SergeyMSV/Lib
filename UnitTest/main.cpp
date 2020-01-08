@@ -11,6 +11,8 @@ namespace utils
 		void UnitTest_PacketNMEA();
 		void UnitTest_PacketStar();
 		void UnitTest_PacketStar2();
+		void UnitTest_PatternCommmand();
+		void UnitTest_PatternState();
 		void UnitTest_Test();
 		void UnitTest_Trap();
 	}
@@ -29,6 +31,8 @@ int main()
 	UnitTest_PacketNMEA();
 	UnitTest_PacketStar();
 	UnitTest_PacketStar2();
+	UnitTest_PatternCommmand();
+	UnitTest_PatternState();
 	//UnitTest_Test();
 	UnitTest_Trap();
 
