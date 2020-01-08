@@ -3,3 +3,6 @@
 ################################################################################
 
 /.vs/Lib/v16
+/UnitTest_PatternCommand/x64/Debug
+/x64/Debug
+/UnitTest_PatternState/x64/Debug
