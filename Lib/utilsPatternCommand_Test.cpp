@@ -32,7 +32,7 @@ void UnitTest_PatternCommmand()
 					:tCommandBase(obj), m_Data(data)
 				{}
 
-				virtual void Execute()
+				virtual void operator()()
 				{
 					std::cout << m_Data << " CommandA\n";
 
@@ -49,7 +49,7 @@ void UnitTest_PatternCommmand()
 					:tCommandBase(obj), m_Data(data)
 				{}
 
-				virtual void Execute()
+				virtual void operator()()
 				{
 					std::cout << m_Data << " CommandB\n";
 
@@ -73,12 +73,15 @@ void UnitTest_PatternCommmand()
 				PutCommand(new tCommandB(this, "Command B"));
 			}
 
-			void Execute()
+			void operator()()
 			{
-				while (GetCommand())
+				tCommand* Cmd = GetCommand();
+
+				while (Cmd != nullptr)
 				{
-					GetCommand()->Execute();
-					SetCommandNext();
+					(*Cmd)();
+
+					Cmd = SetCommandNext();
 				}
 			}
 
@@ -99,7 +102,7 @@ void UnitTest_PatternCommmand()
 		A.CommandA1();
 		A.CommandB();
 
-		A.Execute();
+		A();
 
 		A.CommandA();
 		A.CommandA1();

@@ -11,6 +11,7 @@
 #pragma once
 
 #include <list>
+#include <type_traits>
 
 namespace utils
 {
@@ -32,7 +33,7 @@ protected:
 		virtual ~tCommand() { }
 
 		template <class T>
-		T* GetObject()
+		T* GetObject() const
 		{
 			if (std::is_same<tObjectCommand, T>::value || std::is_base_of<tObjectCommand, T>::value)
 			{
@@ -42,7 +43,7 @@ protected:
 			return nullptr;
 		}
 
-		virtual void Execute() = 0;
+		virtual void operator()() = 0;
 	};
 
 private:

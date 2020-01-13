@@ -66,7 +66,7 @@ void UnitTest_PatternState()
 				ChangeState(new tStateStart(this, "the very start"));
 			}
 
-			void Execute()
+			void operator()()
 			{
 				GetState<tState>()->DoSomeWork();
 
@@ -93,7 +93,7 @@ void UnitTest_PatternState()
 		for (int i = 0; i < 10; ++i)
 		{
 			std::cout << i << " ";
-			A.Execute();
+			A();
 		}
 	}
 
