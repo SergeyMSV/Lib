@@ -33,7 +33,7 @@ protected:
 		virtual ~tStateBase() { }
 
 		template <class T>
-		T* GetObject()
+		T* GetObject() const
 		{
 			if (std::is_same<tObjectState, T>::value || std::is_base_of<tObjectState, T>::value)
 			{
@@ -58,7 +58,7 @@ public:
 	}
 
 	template <class T>
-	T* GetState()
+	T* GetState() const
 	{
 		if (std::is_same<tStateBase, T>::value || std::is_base_of<tStateBase, T>::value)
 		{
