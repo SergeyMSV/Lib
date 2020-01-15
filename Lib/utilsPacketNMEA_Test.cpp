@@ -3,8 +3,6 @@
 #include "utilsBase.h"
 #include "utilsTest.h"
 
-#include <string.h>
-
 #include <iostream>
 #include <iomanip>
 

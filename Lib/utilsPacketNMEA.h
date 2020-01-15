@@ -96,7 +96,7 @@ protected:
 		dst.push_back(CTX);
 
 		char StrCRC[5];
-		sprintf(StrCRC, "%02X", CRC);
+		std::sprintf(StrCRC, "%02X", CRC);
 
 		dst.push_back(StrCRC[0]);
 		dst.push_back(StrCRC[1]);

@@ -67,11 +67,11 @@ void tLog::WriteLineArg(bool timestamp, const char* format, ...)
 {
 	char Buffer[160];
 
-	va_list Args;
+	std::va_list Args;
 
 	va_start(Args, format);
 
-	vsprintf(Buffer, format, Args);
+	std::vsprintf(Buffer, format, Args);
 
 	std::string Str(Buffer);
 
@@ -99,7 +99,7 @@ void tLog::WriteHex(const std::string& msg, const std::vector<char>& data, bool 
 
 	for (unsigned int i = 0; i < data.size(); ++i)
 	{
-		sprintf(Figure, "%02X ", (unsigned char)data[i]);
+		std::sprintf(Figure, "%02X ", (unsigned char)data[i]);
 		Str += Figure;
 
 		if (data[i] <= 0x20 || data[i] == 0x25)
@@ -157,11 +157,11 @@ void tLog::WriteInfoLineArg(bool timestamp, const char* format, ...)
 {
 	char Buffer[160];
 
-	va_list Args;
+	std::va_list Args;
 
 	va_start(Args, format);
 
-	vsprintf(Buffer, format, Args);
+	std::vsprintf(Buffer, format, Args);
 
 	std::string Str(Buffer);
 

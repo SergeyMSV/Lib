@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include <conio.h>
-#include <stdio.h>
+#include <cstdio>
 
 extern const std::vector<utils::shell::tShellCommandList> g_ShellCommandList;
 
@@ -63,7 +63,7 @@ public:
 				}
 				else
 				{
-					printf(MenuFormat, g_ShellCommandList[i].Command, g_ShellCommandList[i].Description);
+					std::printf(MenuFormat, g_ShellCommandList[i].Command, g_ShellCommandList[i].Description);
 				}
 			}
 
