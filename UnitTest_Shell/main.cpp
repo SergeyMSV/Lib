@@ -1,12 +1,9 @@
 #include "utilsShell.h"
 
 #include <iostream>
-#include <string>
-#include <utility>
 
 #include <conio.h>
 #include <stdio.h>
-#include <time.h>
 
 extern const std::vector<utils::shell::tShellCommandList> g_ShellCommandList;
 
