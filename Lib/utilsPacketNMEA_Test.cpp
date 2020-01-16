@@ -8,8 +8,6 @@
 
 namespace utils
 {
-	namespace unit_test
-	{
 
 template<typename T>
 void UnitTest_PacketNMEA_Find(const std::string& testName, const std::string& raw, const std::string& data)
@@ -155,5 +153,4 @@ void UnitTest_PacketNMEA()
 	std::cout << std::endl;
 }
 
-	}
 }
