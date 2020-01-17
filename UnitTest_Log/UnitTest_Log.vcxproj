@@ -138,6 +138,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Lib\utilsBase.h" />
     <ClInclude Include="..\Lib\utilsLog.h" />
     <ClInclude Include="..\Lib\utilsTest.h" />
     <ClInclude Include="devConfig.h" />

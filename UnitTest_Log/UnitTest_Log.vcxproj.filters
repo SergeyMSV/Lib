@@ -27,5 +27,8 @@
     <ClInclude Include="..\Lib\utilsTest.h">
       <Filter>Lib</Filter>
     </ClInclude>
+    <ClInclude Include="..\Lib\utilsBase.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -26,22 +26,22 @@
 // |            |               | Added WriteLine(std::string msg, tLogColour textColour, bool timestamp = true)
 // |     16     |   2019 04 25  | Refactored
 // |     17     |   2019 05 11  | Updated
-// |     18     |   2020 01 15  | Updated
+// |     18     |   2020 01 17  | Refactored, thread safe
 // |            |               |
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
 #include <libConfig.h>
 
-#include <string>
-#include <vector>
+#include <utilsBase.h>
 
 #include <cstdarg>
+#include <string>
+#include <mutex>
 
 namespace utils
 {
 
-#ifdef LIB_UTILS_LOG
 enum class tLogColour : unsigned char
 {
 	Black,
@@ -63,30 +63,30 @@ enum class tLogColour : unsigned char
 	LightWhite,
 };
 
+#ifdef LIB_UTILS_LOG
+
 class tLog
 {
+	mutable std::mutex m_Mtx;
+
 public:
 	tLog() { }
 	virtual ~tLog() { }
 
-	void Write(const std::string& msg, tLogColour textColour, bool timestamp = true);
-	void WriteLine(const std::string& msg, tLogColour textColour, bool timestamp = true);
+	void Write(bool timestamp, tLogColour textColour, const std::string& msg);
+	void Write(bool timestamp, tLogColour textColour, const char* format, ...);
 
-	void Write(const std::string& msg, bool timestamp = true);
-	void WriteLine(const std::string& msg, bool timestamp = true);
+	void WriteLine();
+	void WriteLine(bool timestamp, tLogColour textColour, const std::string& msg);
+	void WriteLine(bool timestamp, tLogColour textColour, const char* format, ...);
 
-	void WriteLineArg(bool timestamp, const char* format, ...);
-
-	void WriteErrLine(const std::string& msg, bool timestamp = true);
-
-	void WriteHex(const std::string& msg, const std::vector<char>& data, bool timestamp = true);
-
-	void WriteInfoBlock(const std::string& msg);
-	void WriteInfoLine(const std::string& msg, bool timestamp = true);
-	void WriteInfoLineArg(bool timestamp, const char* format, ...);
+	void WriteHex(bool timestamp, tLogColour textColour, const std::string& msg, const tVectorUInt8& data);
 
 protected:
-	virtual void WriteLog(const std::string& msg, bool timestamp, bool showAlways) = 0;
+	virtual void WriteLog(const std::string& msg) = 0;
+
+private:
+	virtual void WriteLog(bool timestamp, bool endl, tLogColour textColour, const std::string& msg);
 };
 
 #else//LIB_UTILS_LOG
@@ -97,21 +97,17 @@ public:
 	tLog() { }
 	virtual ~tLog() { }
 
-	void Write(const std::string& msg, bool timestamp = true) { }
-	void WriteLine(const std::string& msg, bool timestamp = true) { }
+	void Write(bool timestamp, tLogColour textColour, const std::string& msg) { }
+	void Write(bool timestamp, tLogColour textColour, const char* format, ...) { }
 
-	void WriteLineArg(bool timestamp, const char* format, ...) { }
+	void WriteLine() { }
+	void WriteLine(bool timestamp, tLogColour textColour, const std::string& msg) { }
+	void WriteLine(bool timestamp, tLogColour textColour, const char* format, ...) { }
 
-	void WriteErrLine(const std::string& msg, bool timestamp = true) { }
-
-	void WriteHex(const std::string& msg, const std::vector<char>& data, bool timestamp = true) { }
-
-	void WriteInfoBlock(const std::string& msg) { }
-	void WriteInfoLine(const std::string& msg, bool timestamp = true) { }
-	void WriteInfoLineArg(bool timestamp, const char* format, ...) { }
+	void WriteHex(bool timestamp, tLogColour textColour, const std::string& msg, const tVectorUInt8& data) { }
 
 protected:
-	virtual void WriteLog(const std::string& msg, bool timestamp, bool showAlways) = 0;
+	virtual void WriteLog(const std::string& msg) = 0;
 };
 
 #endif//LIB_UTILS_LOG
