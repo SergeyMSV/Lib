@@ -86,7 +86,7 @@ void tLog::WriteHex(bool timestamp, tLogColour textColour, const std::string& ms
 
 			Substr.clear();
 
-			if (i < data.size() - 1)//It's not needed fot the last string
+			if (i < data.size() - 1)//It's not needed for the last string
 			{
 				Str += '\n';
 			}
@@ -126,19 +126,15 @@ void tLog::WriteLog(bool timestamp, bool endl, tLogColour textColour, const std:
 	{
 		auto TimeNow = std::chrono::high_resolution_clock::now();
 
-		std::chrono::duration<unsigned long, std::milli> Time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(TimeNow.time_since_epoch());
+		std::chrono::duration<unsigned long long, std::micro> Time_us = std::chrono::duration_cast<std::chrono::microseconds>(TimeNow.time_since_epoch());
 
-		unsigned long Tm_ms = Time_ms.count() % 1000;
+		std::chrono::duration<unsigned long> Time_s = std::chrono::duration_cast<std::chrono::seconds>(TimeNow.time_since_epoch());
 
-		std::chrono::system_clock::time_point TimeSystemNow = std::chrono::system_clock::now();
-
-		std::time_t Time = std::chrono::system_clock::to_time_t(TimeSystemNow);
-
-		tm* TM = std::localtime(&Time);
+		unsigned long Tm_us = static_cast<decltype(Tm_us)>(Time_us.count() % 1000000);
 
 		char Str[20];
 
-		std::sprintf(Str, "[%.2d.%.2d:%.3d]", static_cast<unsigned char>(TM->tm_min), static_cast<unsigned char>(TM->tm_sec), static_cast<unsigned char>(Tm_ms));
+		std::sprintf(Str, "[%.5d.%.6d]", Time_s.count(), Tm_us);
 
 		WriteLog(Str);
 	}
