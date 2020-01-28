@@ -14,7 +14,7 @@
     <ClCompile Include="..\Lib\utilsPacketNMEAType.cpp">
       <Filter>Lib</Filter>
     </ClCompile>
-    <ClCompile Include="..\Lib\utilsPacketNMEAPayload_Test.cpp">
+    <ClCompile Include="..\Lib\utilsPacketNMEAType_Test.cpp">
       <Filter>Lib</Filter>
     </ClCompile>
   </ItemGroup>
@@ -25,12 +25,6 @@
     </ClInclude>
     <ClInclude Include="libConfig.h" />
     <ClInclude Include="..\Lib\utilsTest.h">
-      <Filter>Lib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Lib\utilsPacketNMEA.h">
-      <Filter>Lib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Lib\utilsPacketNMEAPayloadRMC.h">
       <Filter>Lib</Filter>
     </ClInclude>
     <ClInclude Include="..\Lib\utilsPacketNMEAType.h">

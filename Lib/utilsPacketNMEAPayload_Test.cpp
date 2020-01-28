@@ -1,85 +1,97 @@
-#include "utilsPacketNMEA.h"
+#include "utilsPacketNMEAPayloadRMC.h"
 
 #include "utilsBase.h"
 #include "utilsTest.h"
 
 #include <iostream>
 #include <iomanip>
+//#include <tuple>
 
 namespace utils
 {
 
+//template <class T>
+//void UnitTest_PacketNMEAPayload_Test()
+//{
+//	T Val;
+//	std::cout << Val.ToString() << '\n';
+//}
+//
+//template <class T, class TArg>
+//void UnitTest_PacketNMEAPayload_Test(TArg arg)
+//{
+//	T Val(arg);
+//	std::cout << Val.ToString() << '\n';
+//}
+
 void UnitTest_PacketNMEAPayload()
 {
-	std::cout << "\n""utils::packet::tPacketNMEA Payload\n";
-/*
+	std::cout << "\n""utils::packet_NMEA::PayloadRMC\n";
+
+	using namespace utils::packet_NMEA;
+
 	typedef utils::packet::tPacket<utils::packet_NMEA::tFormatNMEA, utils::packet_NMEA::tPayloadCommon> tPacketNMEA;
+	tPacketNMEA lalal;
 
-	UnitTest_PacketNMEA_Find<tPacketNMEA>("Parse CRC: Just a packet",
-		"$GPGSV,3,1,10,23,38,230,44,29,71,156,47,07,29,116,41,08,09,081,36*7F\xd\xa",
-		"$GPGSV,3,1,10,23,38,230,44,29,71,156,47,07,29,116,41,08,09,081,36*7F\xd\xa");
+	tVectorUInt8 Vect = lalal.ToVector();
+	std::string Raw("$GNRMC,090210.000,A,5539.564975,N,03732.411956,E,0.03,274.40,120517,,,A*71\xd\xa");
+	tVectorUInt8 DataVector(Raw.begin(), Raw.end());
 
-	UnitTest_PacketNMEA_Find<tPacketNMEA>("Parse CRC: Rubbish",
-		"GNGG$GNGG$GNGGA,221$GPGSV,3,1,10,23,38,230,44,29,71,156,47,07,29,116,41,08,09,081,36*7F\xd\xa,081,36*7F\xd\xa",
-		"$GPGSV,3,1,10,23,38,230,44,29,71,156,47,07,29,116,41,08,09,081,36*7F\xd\xa");
+	tPacketNMEA Packet;
 
-	UnitTest_PacketNMEA_Find<tPacketNMEA>("Parse CRC: Wrong Packet + Right Packet",
-		"$GPGSV,3,1,10,23,38,230,44,29,21,156,47,07,29,116,41,08,09,081,36*7F\xd\xa$GNGGA,221325.000,,,,,0,0,,,M,,M,,*53\xd\xa",
-		"$GNGGA,221325.000,,,,,0,0,,,M,,M,,*53\xd\xa");
+	bool Result = tPacketNMEA::Find(DataVector, Packet);
 
-	UnitTest_PacketNMEA_Find<tPacketNMEA>("Parse CRC: GGA PayloadSize=84 (more than stipulated in NMEA)",
-		"$GPGGA,192758.000,5555.4159,N,03745.0626,E,1,08,01.0,00309.6,M,0014.4,M,000.0,0000*48\xd\xa",
-		"$GPGGA,192758.000,5555.4159,N,03745.0626,E,1,08,01.0,00309.6,M,0014.4,M,000.0,0000*48\xd\xa");
+	utils::packet_NMEA::tPayloadCommon::value_type PacketData = Packet.GetPayload();
 
-	UnitTest_PacketNMEA_Find<tPacketNMEA>("Parse CRC: Find GGA 1",
-		"$GPGGA,090210.000,5539.564975,N,03732.411956,E,1,13,0.90,231.400,M,14.535,M,,*62\xd\xa",
-		"$GPGGA,090210.000,5539.564975,N,03732.411956,E,1,13,0.90,231.400,M,14.535,M,,*62\xd\xa");
+	tPayloadRMC<13> Val(PacketData);
 
-	UnitTest_PacketNMEA_Find<tPacketNMEA>("Parse CRC: Find RMC 1",
-		"$GNRMC,090210.000,A,5539.564975,N,03732.411956,E,0.03,274.40,120517,,,A*71\xd\xa",
-		"$GNRMC,090210.000,A,5539.564975,N,03732.411956,E,0.03,274.40,120517,,,A*71\xd\xa");
+	//UnitTest_PacketNMEAPayload_Test<tDate>();
+	//UnitTest_PacketNMEAPayload_Test<tDate>("120517");
+	////std::tuple<tUInt8, tUInt8, tUInt8> Args = std::make_tuple( 17, 4, 19 );
+	////UnitTest_PacketNMEAPayload_Test<tDate>(Args);
+	//{
+	//	tDate Val(17, 4, 19);
 
-	UnitTest_PacketNMEA_Parse<tPacketNMEA>("Parse CRC: Parse RMC 1",
-		"$GNRMC,090210.000,A,5539.564975,N,03732.411956,E,0.03,274.40,120517,,,A*71\xd\xa",
-		{ "GNRMC", "090210.000", "A", "5539.564975", "N", "03732.411956", "E", "0.03", "274.40", "120517", "", "", "A" });
+	//	std::cout << Val.ToString() << '\n';
+	//}
+	//
+	//typedef tTime<6> tTime6;
+	//UnitTest_PacketNMEAPayload_Test<tTime6>();
+	//UnitTest_PacketNMEAPayload_Test<tTime6>("192758");
+	//{
+	//	tTime6 Val(17, 4, 19);
 
-	UnitTest_PacketNMEA_Make<tPacketNMEA>("Parse CRC: Make GNRMC",
-		{ "GNRMC", "090210.000", "A", "5539.564975", "N", "03732.411956", "E", "0.03", "274.40", "120517", "", "", "A" });
+	//	std::cout << Val.ToString() << '\n';
+	//}
 
-	UnitTest_PacketNMEA_Make<tPacketNMEA>("Parse CRC: Make MYRMC Empty",
-		{ "MYRMC" });
+	//typedef tTime<10> tTime10;
+	//UnitTest_PacketNMEAPayload_Test<tTime10>();
+	//UnitTest_PacketNMEAPayload_Test<tTime10>("192758.345");
+	//{
+	//	tTime10 Val(17, 4, 19.524);
 
-	UnitTest_PacketNMEA_Make<tPacketNMEA>("Parse CRC: Make MYRMC 1",
-		{ "MYRMC", "Preved" });
+	//	std::cout << Val.ToString() << '\n';
+	//}
 
-	UnitTest_PacketNMEA_Make<tPacketNMEA>("Parse CRC: Make MYRMC 2",
-		{ "MYRMC", "Preved", "Medved" });
+	//typedef tLatitude<9> tLatitude9;
+	//UnitTest_PacketNMEAPayload_Test<tLatitude9>();
+	//UnitTest_PacketNMEAPayload_Test<tLatitude9>("5539.5649");
+	//UnitTest_PacketNMEAPayload_Test<tLatitude9>(31.45678);
 
-	UnitTest_PacketNMEA_Make<tPacketNMEA>("Parse CRC: Make MYRMC 2",
-		{ "MYRMC", "Preved", "Medved", "Odnako" });
+	//typedef tLatitude<11> tLatitude11;
+	//UnitTest_PacketNMEAPayload_Test<tLatitude11>();
+	//UnitTest_PacketNMEAPayload_Test<tLatitude11>("5539.564975");
+	//UnitTest_PacketNMEAPayload_Test<tLatitude11>(31.4567834);
 
-	std::cout << "\n""tPacketNMEABin\n";
+	//typedef tLongitude<10> tLongitude10;
+	//UnitTest_PacketNMEAPayload_Test<tLongitude10>();
+	//UnitTest_PacketNMEAPayload_Test<tLongitude10>("03732.4119");
+	//UnitTest_PacketNMEAPayload_Test<tLongitude10>(31.45678);
 
-	typedef utils::packet::tPacket<utils::packet_NMEA::tFormatNMEABin, utils::packet_NMEA::tPayloadCommon> tPacketNMEABin;
-
-	UnitTest_PacketNMEA_Parse<tPacketNMEABin>("Parse CRC: Just a encapsulation packet",
-		"!AIVDM,1,1,,1,1P000Oh1IT1svTP2r:43grwb05q4,0*01\xd\xa",
-		{ "AIVDM", "1", "1", "", "1", "1P000Oh1IT1svTP2r:43grwb05q4", "0" });
-
-	//CRC matches by chance
-	//UnitTest_PacketNMEA_Parse<tPacketNMEABin>("Parse CRC: Rubbish & encapsulation packet",
-	//	"!AIVDM!AIVDM!AIVDM!AIVDM!AIVDM,1,1,,1,1P000Oh1IT1svTP2r:43grwb05q4,0*01\xd\xa,081,36*7F\xd\xa",
-	//	{ "AIVDM", "1", "1", "", "1", "1P000Oh1IT1svTP2r:43grwb05q4", "0" });
-
-	//Added '5' into the header
-	UnitTest_PacketNMEA_Parse<tPacketNMEABin>("Parse CRC: Rubbish & encapsulation packet",
-		"!AIVDM!AIVDM!AIV5DM!AIVDM!AIVDM,1,1,,1,1P000Oh1IT1svTP2r:43grwb05q4,0*01\xd\xa,081,36*7F\xd\xa",
-		{ "AIVDM", "1", "1", "", "1", "1P000Oh1IT1svTP2r:43grwb05q4", "0" });
-
-	UnitTest_PacketNMEA_Make<tPacketNMEABin>("Parse CRC: Make MYRMC 3 encapsulation packet",
-		{ "MYRMC", "Preved", "Medved", "Odnako" });
-		*/
-
+	//typedef tLongitude<12> tLongitude12;
+	//UnitTest_PacketNMEAPayload_Test<tLongitude12>();
+	//UnitTest_PacketNMEAPayload_Test<tLongitude12>("03732.411956");
+	//UnitTest_PacketNMEAPayload_Test<tLongitude12>(231.4567834);
 
 	std::cout << std::endl;
 }

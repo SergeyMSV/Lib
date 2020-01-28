@@ -56,10 +56,13 @@
     <ClCompile Include="..\Lib\utilsPatternState_Test.cpp">
       <Filter>Lib</Filter>
     </ClCompile>
-    <ClCompile Include="..\Lib\utilsPacketNMEAPayload.cpp">
+    <ClCompile Include="..\Lib\utilsPacketNMEAPayloadRMC_Test.cpp">
       <Filter>Lib</Filter>
     </ClCompile>
-    <ClCompile Include="..\Lib\utilsPacketNMEAPayload_Test.cpp">
+    <ClCompile Include="..\Lib\utilsPacketNMEAType.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Lib\utilsPacketNMEAType_Test.cpp">
       <Filter>Lib</Filter>
     </ClCompile>
   </ItemGroup>
@@ -114,7 +117,10 @@
     <ClInclude Include="..\Lib\utilsPatternState.h">
       <Filter>Lib</Filter>
     </ClInclude>
-    <ClInclude Include="..\Lib\utilsPacketNMEAPayload.h">
+    <ClInclude Include="..\Lib\utilsPacketNMEAPayloadRMC.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lib\utilsPacketNMEAType.h">
       <Filter>Lib</Filter>
     </ClInclude>
   </ItemGroup>
