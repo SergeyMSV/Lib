@@ -11,3 +11,5 @@
 /UnitTest/x64/Debug
 /Debug
 /UnitTest/Debug
+/UnitTest_PacketNMEAPayload/Debug
+/UnitTest_PacketNMEAType/Debug

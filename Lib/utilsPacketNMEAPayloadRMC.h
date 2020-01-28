@@ -13,39 +13,86 @@
 #include "utilsBase.h"
 #include "utilsPacketNMEA.h"
 #include "utilsPacketNMEAType.h"
-//#include <cstdio>
-//#include <cstdlib>
-//#include <cstring>
-//
-//#include <string>
-//#include <vector>
 
 namespace utils
 {
 	namespace packet_NMEA
 	{
 
-typedef Type::tTime<10> tTimeDuper;
-
-template <std::size_t FieldQty>
+template
+<
+	std::size_t FieldQty,
+	int TimeSize,
+	int LatitudeSize,
+	int LongitudeSize
+>
 struct tPayloadRMC
 {
+	typedef Type::tTime<TimeSize> time_type;
+	typedef Type::tLatitude<LatitudeSize> latitude_type;
+	typedef Type::tLongitude<LongitudeSize> longitude_type;
+
+	Type::tGNSS GNSS;
 	Type::tDate Date;
-	tTimeDuper Time;
+	time_type Time;
+	latitude_type Latitude;
+	longitude_type Longitude;
 
 	tPayloadRMC() = default;
 	explicit tPayloadRMC(const tPayloadCommon::value_type& val)
 	{
 		if (val.size() == FieldQty && val[0].size() > 3 && !std::strcmp(&val[0][2],"RMC"))
 		{
-			Time = tTimeDuper(val[1]);
+			switch (val[0][1])
+			{
+			case 'P': GNSS = Type::tGNSS::GPS; break;
+			case 'L': GNSS = Type::tGNSS::GLONASS; break;
+			case 'N': GNSS = Type::tGNSS::GPS_GLONASS; break;
+			}
+
+			Time = time_type(val[1]);
+			//val[2]; A
+			Latitude = latitude_type(val[3]);
+			//val[4]; N
+			Longitude = longitude_type(val[5]);
+			//...
+			Date = Type::tDate(val[9]);
 		}
 	}
 
-	std::string ToString()
+	tPayloadCommon::value_type GetPayload()
 	{
-		return "";
+		tPayloadCommon::value_type Data;
+
+		std::string Str("G");
+		switch (GNSS)
+		{
+		case Type::tGNSS::GPS: Str += 'P'; break;
+		case Type::tGNSS::GLONASS: Str += 'L'; break;
+		case Type::tGNSS::GPS_GLONASS: Str += 'N'; break;
+		default: Str += '-'; break;
+		}
+		Data.push_back(Str + "RMC");
+		Data.push_back(Time.ToString());
+		Data.push_back("");
+		Data.push_back(Latitude.ToString());
+		Data.push_back("");
+		Data.push_back(Longitude.ToString());
+		Data.push_back("");
+		Data.push_back("");
+		Data.push_back("");
+		Data.push_back(Date.ToString());
+		Data.push_back("");
+		Data.push_back("");
+		Data.push_back("");
+
+		return Data;
 	}
+
+	//std::string ToString()
+	//{
+	//	return "";
+	//}
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 /*struct tDate

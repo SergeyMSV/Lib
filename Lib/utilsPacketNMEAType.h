@@ -26,6 +26,25 @@ namespace utils
 		namespace Type
 		{
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+enum class tGNSS : tUInt8//like bitfield
+{
+	UNKNOWN = 0,
+	GPS = 1,
+	GLONASS,
+	GPS_GLONASS,	
+};
+//union tGNSS
+//{
+//	struct
+//	{
+//		tUInt8 GPS : 1;
+//		tUInt8 GLONASS : 1;
+//		tUInt8 : 6;
+//	}Field;
+//
+//	tUInt8 Value;
+//};
+///////////////////////////////////////////////////////////////////////////////////////////////////
 struct tDate
 {
 	tUInt8 Year = 0;
@@ -149,7 +168,7 @@ struct tLongitude
 
 			Value = std::strtod(Data, 0);
 
-			double Rest = std::strtod(val.c_str() + 2, 0);
+			double Rest = std::strtod(val.c_str() + 3, 0);
 
 			Value += Rest / 60;
 		}

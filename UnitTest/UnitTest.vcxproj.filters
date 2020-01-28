@@ -56,13 +56,13 @@
     <ClCompile Include="..\Lib\utilsPatternState_Test.cpp">
       <Filter>Lib</Filter>
     </ClCompile>
-    <ClCompile Include="..\Lib\utilsPacketNMEAPayloadRMC_Test.cpp">
-      <Filter>Lib</Filter>
-    </ClCompile>
     <ClCompile Include="..\Lib\utilsPacketNMEAType.cpp">
       <Filter>Lib</Filter>
     </ClCompile>
     <ClCompile Include="..\Lib\utilsPacketNMEAType_Test.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Lib\utilsPacketNMEAPayload_Test.cpp">
       <Filter>Lib</Filter>
     </ClCompile>
   </ItemGroup>

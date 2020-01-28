@@ -43,7 +43,9 @@ void UnitTest_PacketNMEAPayload()
 
 	utils::packet_NMEA::tPayloadCommon::value_type PacketData = Packet.GetPayload();
 
-	tPayloadRMC<13> Val(PacketData);
+	tPayloadRMC<13, 10, 11, 12> Val(PacketData);
+
+	utils::packet_NMEA::tPayloadCommon::value_type PacketData1 = Val.GetPayload();
 
 	//UnitTest_PacketNMEAPayload_Test<tDate>();
 	//UnitTest_PacketNMEAPayload_Test<tDate>("120517");
