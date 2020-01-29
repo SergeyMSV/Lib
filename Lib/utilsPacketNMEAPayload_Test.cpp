@@ -1,4 +1,4 @@
-#include "utilsPacketNMEAPayloadRMC.h"
+#include "utilsPacketNMEAPayload.h"
 
 #include "utilsBase.h"
 #include "utilsTest.h"
@@ -26,7 +26,7 @@ namespace utils
 
 void UnitTest_PacketNMEAPayload()
 {
-	std::cout << "\n""utils::packet_NMEA::PayloadRMC\n";
+	std::cout << "\n""utils::packet_NMEA::Payload\n";
 
 	using namespace utils::packet_NMEA;
 

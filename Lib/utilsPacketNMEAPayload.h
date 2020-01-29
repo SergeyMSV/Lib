@@ -28,12 +28,14 @@ template
 >
 struct tPayloadRMC
 {
+	typedef Type::tGNSS gnss_type;
+	typedef Type::tDate date_type;
 	typedef Type::tTime<TimeSize> time_type;
 	typedef Type::tLatitude<LatitudeSize> latitude_type;
 	typedef Type::tLongitude<LongitudeSize> longitude_type;
 
-	Type::tGNSS GNSS;
-	Type::tDate Date;
+	gnss_type GNSS = gnss_type::UNKNOWN;
+	date_type Date;
 	time_type Time;
 	latitude_type Latitude;
 	longitude_type Longitude;
@@ -45,9 +47,9 @@ struct tPayloadRMC
 		{
 			switch (val[0][1])
 			{
-			case 'P': GNSS = Type::tGNSS::GPS; break;
-			case 'L': GNSS = Type::tGNSS::GLONASS; break;
-			case 'N': GNSS = Type::tGNSS::GPS_GLONASS; break;
+			case 'P': GNSS = gnss_type::GPS; break;
+			case 'L': GNSS = gnss_type::GLONASS; break;
+			case 'N': GNSS = gnss_type::GPS_GLONASS; break;
 			}
 
 			Time = time_type(val[1]);
@@ -56,7 +58,7 @@ struct tPayloadRMC
 			//val[4]; N
 			Longitude = longitude_type(val[5]);
 			//...
-			Date = Type::tDate(val[9]);
+			Date = date_type(val[9]);
 		}
 	}
 
@@ -67,9 +69,9 @@ struct tPayloadRMC
 		std::string Str("G");
 		switch (GNSS)
 		{
-		case Type::tGNSS::GPS: Str += 'P'; break;
-		case Type::tGNSS::GLONASS: Str += 'L'; break;
-		case Type::tGNSS::GPS_GLONASS: Str += 'N'; break;
+		case gnss_type::GPS: Str += 'P'; break;
+		case gnss_type::GLONASS: Str += 'L'; break;
+		case gnss_type::GPS_GLONASS: Str += 'N'; break;
 		default: Str += '-'; break;
 		}
 		Data.push_back(Str + "RMC");
