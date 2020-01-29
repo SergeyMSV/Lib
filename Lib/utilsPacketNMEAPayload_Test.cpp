@@ -43,57 +43,28 @@ void UnitTest_PacketNMEAPayload()
 
 	utils::packet_NMEA::tPayloadCommon::value_type PacketData = Packet.GetPayload();
 
-	tPayloadRMC<13, 10, 11, 12> Val(PacketData);
+	typedef tPayloadRMC<13, 10, 11, 12> tMsgRMC;
 
-	utils::packet_NMEA::tPayloadCommon::value_type PacketData1 = Val.GetPayload();
+	tMsgRMC Val(PacketData);
 
-	//UnitTest_PacketNMEAPayload_Test<tDate>();
-	//UnitTest_PacketNMEAPayload_Test<tDate>("120517");
-	////std::tuple<tUInt8, tUInt8, tUInt8> Args = std::make_tuple( 17, 4, 19 );
-	////UnitTest_PacketNMEAPayload_Test<tDate>(Args);
-	//{
-	//	tDate Val(17, 4, 19);
+	if (Val.GNSS != tMsgRMC::gnss_type::UNKNOWN)//Parsed!!
+	{
+		utils::packet_NMEA::tPayloadCommon::value_type PacketData1 = Val.GetPayload();
 
-	//	std::cout << Val.ToString() << '\n';
-	//}
-	//
-	//typedef tTime<6> tTime6;
-	//UnitTest_PacketNMEAPayload_Test<tTime6>();
-	//UnitTest_PacketNMEAPayload_Test<tTime6>("192758");
-	//{
-	//	tTime6 Val(17, 4, 19);
+		tPacketNMEA Packet2(PacketData1);
 
-	//	std::cout << Val.ToString() << '\n';
-	//}
+		tVectorUInt8 RawPacket = Packet2.ToVector();
 
-	//typedef tTime<10> tTime10;
-	//UnitTest_PacketNMEAPayload_Test<tTime10>();
-	//UnitTest_PacketNMEAPayload_Test<tTime10>("192758.345");
-	//{
-	//	tTime10 Val(17, 4, 19.524);
+		std::cout << "Preved: " << std::string(RawPacket.cbegin(), RawPacket.cend());//C++14
+	}
 
-	//	std::cout << Val.ToString() << '\n';
-	//}
 
-	//typedef tLatitude<9> tLatitude9;
-	//UnitTest_PacketNMEAPayload_Test<tLatitude9>();
-	//UnitTest_PacketNMEAPayload_Test<tLatitude9>("5539.5649");
-	//UnitTest_PacketNMEAPayload_Test<tLatitude9>(31.45678);
-
-	//typedef tLatitude<11> tLatitude11;
-	//UnitTest_PacketNMEAPayload_Test<tLatitude11>();
-	//UnitTest_PacketNMEAPayload_Test<tLatitude11>("5539.564975");
-	//UnitTest_PacketNMEAPayload_Test<tLatitude11>(31.4567834);
-
-	//typedef tLongitude<10> tLongitude10;
-	//UnitTest_PacketNMEAPayload_Test<tLongitude10>();
-	//UnitTest_PacketNMEAPayload_Test<tLongitude10>("03732.4119");
-	//UnitTest_PacketNMEAPayload_Test<tLongitude10>(31.45678);
 
 	//typedef tLongitude<12> tLongitude12;
 	//UnitTest_PacketNMEAPayload_Test<tLongitude12>();
 	//UnitTest_PacketNMEAPayload_Test<tLongitude12>("03732.411956");
 	//UnitTest_PacketNMEAPayload_Test<tLongitude12>(231.4567834);
+
 
 	std::cout << std::endl;
 }

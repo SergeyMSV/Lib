@@ -26,24 +26,13 @@ namespace utils
 		namespace Type
 		{
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-enum class tGNSS : tUInt8//like bitfield
+enum class tGNSS : tUInt8//It's like bitfield
 {
 	UNKNOWN = 0,
-	GPS = 1,
-	GLONASS,
-	GPS_GLONASS,	
+	GPS = 1,    //0000'0001
+	GLONASS,    //0000'0010
+	GPS_GLONASS,//0000'0011
 };
-//union tGNSS
-//{
-//	struct
-//	{
-//		tUInt8 GPS : 1;
-//		tUInt8 GLONASS : 1;
-//		tUInt8 : 6;
-//	}Field;
-//
-//	tUInt8 Value;
-//};
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 struct tDate
 {

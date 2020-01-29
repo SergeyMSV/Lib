@@ -117,10 +117,10 @@
     <ClInclude Include="..\Lib\utilsPatternState.h">
       <Filter>Lib</Filter>
     </ClInclude>
-    <ClInclude Include="..\Lib\utilsPacketNMEAPayloadRMC.h">
+    <ClInclude Include="..\Lib\utilsPacketNMEAType.h">
       <Filter>Lib</Filter>
     </ClInclude>
-    <ClInclude Include="..\Lib\utilsPacketNMEAType.h">
+    <ClInclude Include="..\Lib\utilsPacketNMEAPayload.h">
       <Filter>Lib</Filter>
     </ClInclude>
   </ItemGroup>

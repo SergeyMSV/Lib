@@ -166,7 +166,7 @@
     <ClInclude Include="..\Lib\utilsPacket.h" />
     <ClInclude Include="..\Lib\utilsPacketBNTBX2.h" />
     <ClInclude Include="..\Lib\utilsPacketNMEA.h" />
-    <ClInclude Include="..\Lib\utilsPacketNMEAPayloadRMC.h" />
+    <ClInclude Include="..\Lib\utilsPacketNMEAPayload.h" />
     <ClInclude Include="..\Lib\utilsPacketNMEAType.h" />
     <ClInclude Include="..\Lib\utilsPacketStar.h" />
     <ClInclude Include="..\Lib\utilsPacketStar2.h" />
