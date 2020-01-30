@@ -12,6 +12,7 @@
 
 #include "utilsBase.h"
 
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -100,11 +101,11 @@ struct tLatitude
 
 	tLatitude() = default;
 	explicit tLatitude(double val) :Value(val) {}
-	explicit tLatitude(const std::string& val)
+	tLatitude(const std::string& val, const std::string& valSign)
 	{
 		static_assert(Size == 9 || Size == 11, "tLatitude: Size");//C++11
 
-		if (val.size() == Size)
+		if (val.size() == Size && valSign.size() == 1)
 		{
 			char Data[3]{};
 
@@ -115,13 +116,20 @@ struct tLatitude
 			double Rest = std::strtod(val.c_str() + 2, 0);
 
 			Value += Rest / 60;
+
+			if (valSign[0] == 'S')
+			{
+				Value = -Value;
+			}
 		}
 	}
 
-	std::string ToString()
+	std::string ToStringValue()
 	{
-		tUInt8 Deg = static_cast<tUInt8>(Value);
-		double Min = (Value - Deg) * 60;
+		double ValueAbs = std::abs(Value);
+
+		tUInt8 Deg = static_cast<tUInt8>(ValueAbs);
+		double Min = (ValueAbs - Deg) * 60;
 
 		char Str[Size + 1]{};
 
@@ -136,6 +144,16 @@ struct tLatitude
 
 		return Str;
 	}
+
+	std::string ToStringHemisphere()
+	{
+		return Value < 0 ? "S" : "N";
+	}
+
+	std::string ToString()
+	{
+		return ToStringValue() + ',' + ToStringHemisphere();
+	}
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 template <std::size_t Size>
@@ -145,11 +163,11 @@ struct tLongitude
 
 	tLongitude() = default;
 	explicit tLongitude(double val) :Value(val) { }
-	explicit tLongitude(const std::string& val)
+	tLongitude(const std::string& val, const std::string& valSign)
 	{
 		static_assert(Size == 10 || Size == 12, "tLongitude: Size");//C++11
 
-		if (val.size() == Size)
+		if (val.size() == Size && valSign.size() == 1)
 		{
 			char Data[4]{};
 
@@ -160,13 +178,20 @@ struct tLongitude
 			double Rest = std::strtod(val.c_str() + 3, 0);
 
 			Value += Rest / 60;
+
+			if (valSign[0] == 'W')
+			{
+				Value = -Value;
+			}
 		}
 	}
 
-	std::string ToString()
+	std::string ToStringValue()
 	{
-		tUInt16 Deg = static_cast<tUInt16>(Value);
-		double Min = (Value - Deg) * 60;
+		double ValueAbs = std::abs(Value);
+
+		tUInt16 Deg = static_cast<tUInt16>(ValueAbs);
+		double Min = (ValueAbs - Deg) * 60;
 
 		char Str[Size + 1]{};
 
@@ -180,6 +205,16 @@ struct tLongitude
 		}
 
 		return Str;
+	}
+
+	std::string ToStringHemisphere()
+	{
+		return Value < 0 ? "W" : "E";
+	}
+
+	std::string ToString()
+	{
+		return ToStringValue() + ',' + ToStringHemisphere();
 	}
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////

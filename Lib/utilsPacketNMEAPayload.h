@@ -54,9 +54,8 @@ struct tPayloadRMC
 
 			Time = time_type(val[1]);
 			//val[2]; A
-			Latitude = latitude_type(val[3]);
-			//val[4]; N
-			Longitude = longitude_type(val[5]);
+			Latitude = latitude_type(val[3], val[4]);
+			Longitude = longitude_type(val[5], val[6]);
 			//...
 			Date = date_type(val[9]);
 		}
@@ -77,10 +76,10 @@ struct tPayloadRMC
 		Data.push_back(Str + "RMC");
 		Data.push_back(Time.ToString());
 		Data.push_back("");
-		Data.push_back(Latitude.ToString());
-		Data.push_back("");
-		Data.push_back(Longitude.ToString());
-		Data.push_back("");
+		Data.push_back(Latitude.ToStringValue());
+		Data.push_back(Latitude.ToStringHemisphere());
+		Data.push_back(Longitude.ToStringValue());
+		Data.push_back(Longitude.ToStringHemisphere());
 		Data.push_back("");
 		Data.push_back("");
 		Data.push_back(Date.ToString());

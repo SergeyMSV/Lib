@@ -24,6 +24,13 @@ void UnitTest_PacketNMEAPayload_Test(TArg arg)
 	std::cout << Val.ToString() << '\n';
 }
 
+template <class T, class TArg>
+void UnitTest_PacketNMEAPayload_Test(TArg arg1, TArg arg2)
+{
+	T Val(arg1, arg2);
+	std::cout << Val.ToString() << '\n';
+}
+
 void UnitTest_PacketNMEAType()
 {
 	std::cout << "\n""utils::packet_NMEA::Payload\n";
@@ -60,22 +67,22 @@ void UnitTest_PacketNMEAType()
 
 	typedef tLatitude<9> tLatitude9;
 	UnitTest_PacketNMEAPayload_Test<tLatitude9>();
-	UnitTest_PacketNMEAPayload_Test<tLatitude9>("5539.5649");
+	UnitTest_PacketNMEAPayload_Test<tLatitude9>("5539.5649", "S");
 	UnitTest_PacketNMEAPayload_Test<tLatitude9>(31.45678);
 
 	typedef tLatitude<11> tLatitude11;
 	UnitTest_PacketNMEAPayload_Test<tLatitude11>();
-	UnitTest_PacketNMEAPayload_Test<tLatitude11>("5539.564975");
+	UnitTest_PacketNMEAPayload_Test<tLatitude11>("5539.564975", "N");
 	UnitTest_PacketNMEAPayload_Test<tLatitude11>(31.4567834);
 
 	typedef tLongitude<10> tLongitude10;
 	UnitTest_PacketNMEAPayload_Test<tLongitude10>();
-	UnitTest_PacketNMEAPayload_Test<tLongitude10>("03732.4119");
+	UnitTest_PacketNMEAPayload_Test<tLongitude10>("03732.4119", "W");
 	UnitTest_PacketNMEAPayload_Test<tLongitude10>(31.45678);
 
 	typedef tLongitude<12> tLongitude12;
 	UnitTest_PacketNMEAPayload_Test<tLongitude12>();
-	UnitTest_PacketNMEAPayload_Test<tLongitude12>("03732.411956");
+	UnitTest_PacketNMEAPayload_Test<tLongitude12>("03732.411956", "E");
 	UnitTest_PacketNMEAPayload_Test<tLongitude12>(231.4567834);
 
 	std::cout << std::endl;
