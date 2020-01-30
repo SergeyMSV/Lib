@@ -38,9 +38,10 @@ enum class tGNSS : tUInt8//It's like bitfield
 struct tValid
 {
 	bool Value = false;
+	bool Absent = true;
 
 	tValid() = default;
-	explicit tValid(bool val) :Value(val) {}
+	explicit tValid(bool val) :Value(val), Absent(false) {}
 	explicit tValid(const std::string& val);
 
 	std::string ToString();
@@ -51,6 +52,7 @@ struct tDate
 	tUInt8 Year = 0;
 	tUInt8 Month = 0;
 	tUInt8 Day = 0;
+	bool Absent = true;
 
 	tDate() = default;//C++11
 	tDate(tUInt8 year, tUInt8 month, tUInt8 day);
@@ -65,13 +67,18 @@ struct tTime
 	tUInt8 Hour = 0;
 	tUInt8 Minute = 0;
 	double Second = 0;
+	bool Absent = true;
 
 	tTime() = default;
-	tTime(tUInt8 hour, tUInt8 minute, double second) :Hour(hour), Minute(minute), Second(second) {}
+	tTime(tUInt8 hour, tUInt8 minute, double second) :Hour(hour), Minute(minute), Second(second), Absent(false) {}
 	explicit tTime(const std::string& val)
 	{
+		static_assert(Size == 6 || Size == 10, "tTime: Size");//C++11
+
 		if (val.size() == Size)
 		{
+			Absent = false;
+
 			char Data[3]{};//C++11
 
 			Data[0] = val[0];
@@ -90,6 +97,8 @@ struct tTime
 
 	std::string ToString()
 	{
+		if (Absent) return "";
+
 		char Str[Size + 1]{};
 
 		if (Hour < 24 && Minute < 60 && Second < 60)
@@ -109,15 +118,18 @@ template <std::size_t Size>
 struct tLatitude
 {
 	double Value = 0;
+	bool Absent = true;
 
 	tLatitude() = default;
-	explicit tLatitude(double val) :Value(val) {}
+	explicit tLatitude(double val) :Value(val), Absent(false) {}
 	tLatitude(const std::string& val, const std::string& valSign)
 	{
 		static_assert(Size == 9 || Size == 11, "tLatitude: Size");//C++11
 
 		if (val.size() == Size && valSign.size() == 1)
 		{
+			Absent = false;
+
 			char Data[3]{};
 
 			std::strncpy(Data, val.c_str(), sizeof(Data) - 1);
@@ -137,6 +149,8 @@ struct tLatitude
 
 	std::string ToStringValue()
 	{
+		if (Absent) return "";
+
 		double ValueAbs = std::abs(Value);
 
 		tUInt8 Deg = static_cast<tUInt8>(ValueAbs);
@@ -158,6 +172,8 @@ struct tLatitude
 
 	std::string ToStringHemisphere()
 	{
+		if (Absent) return "";
+
 		return Value < 0 ? "S" : "N";
 	}
 
@@ -171,15 +187,18 @@ template <std::size_t Size>
 struct tLongitude
 {
 	double Value = 0;
+	bool Absent = true;
 
 	tLongitude() = default;
-	explicit tLongitude(double val) :Value(val) { }
+	explicit tLongitude(double val) :Value(val), Absent(false) { }
 	tLongitude(const std::string& val, const std::string& valSign)
 	{
 		static_assert(Size == 10 || Size == 12, "tLongitude: Size");//C++11
 
 		if (val.size() == Size && valSign.size() == 1)
 		{
+			Absent = false;
+
 			char Data[4]{};
 
 			std::strncpy(Data, val.c_str(), sizeof(Data) - 1);
@@ -199,6 +218,8 @@ struct tLongitude
 
 	std::string ToStringValue()
 	{
+		if (Absent) return "";
+
 		double ValueAbs = std::abs(Value);
 
 		tUInt16 Deg = static_cast<tUInt16>(ValueAbs);
@@ -220,6 +241,8 @@ struct tLongitude
 
 	std::string ToStringHemisphere()
 	{
+		if (Absent) return "";
+
 		return Value < 0 ? "W" : "E";
 	}
 

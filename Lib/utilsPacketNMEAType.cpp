@@ -11,17 +11,21 @@ tValid::tValid(const std::string& val)
 {
 	if (val.size() == 1)
 	{
+		Absent = false;
+
 		Value = val[0] == 'A' ? true : false;
 	}
 }
 
 std::string tValid::ToString()
 {
+	if (Absent) return "";
+
 	return Value ? "A" : "V";
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 tDate::tDate(tUInt8 year, tUInt8 month, tUInt8 day)
-	:Year(year), Month(month), Day(day)
+	:Year(year), Month(month), Day(day), Absent(false)
 {
 
 }
@@ -30,6 +34,8 @@ tDate::tDate(const std::string& val)
 {
 	if (val.size() == 6)//260216
 	{
+		Absent = false;
+
 		char Data[3]{};//C++11
 
 		Data[0] = val[0];
@@ -51,6 +57,8 @@ tDate::tDate(const std::string& val)
 
 std::string tDate::ToString()
 {
+	if (Absent) return "";
+
 	char Str[10]{};
 
 	if (Year < 100 && Month < 13 && Day < 32)

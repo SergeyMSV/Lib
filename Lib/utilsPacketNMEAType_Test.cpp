@@ -67,21 +67,25 @@ void UnitTest_PacketNMEAType()
 
 	typedef tLatitude<9> tLatitude9;
 	UnitTest_PacketNMEAPayload_Test<tLatitude9>();
+	UnitTest_PacketNMEAPayload_Test<tLatitude9>(0);
 	UnitTest_PacketNMEAPayload_Test<tLatitude9>("5539.5649", "S");
 	UnitTest_PacketNMEAPayload_Test<tLatitude9>(31.45678);
 
 	typedef tLatitude<11> tLatitude11;
 	UnitTest_PacketNMEAPayload_Test<tLatitude11>();
+	UnitTest_PacketNMEAPayload_Test<tLatitude11>(0);
 	UnitTest_PacketNMEAPayload_Test<tLatitude11>("5539.564975", "N");
 	UnitTest_PacketNMEAPayload_Test<tLatitude11>(31.4567834);
 
 	typedef tLongitude<10> tLongitude10;
 	UnitTest_PacketNMEAPayload_Test<tLongitude10>();
+	UnitTest_PacketNMEAPayload_Test<tLongitude10>(0);
 	UnitTest_PacketNMEAPayload_Test<tLongitude10>("03732.4119", "W");
 	UnitTest_PacketNMEAPayload_Test<tLongitude10>(31.45678);
 
 	typedef tLongitude<12> tLongitude12;
 	UnitTest_PacketNMEAPayload_Test<tLongitude12>();
+	UnitTest_PacketNMEAPayload_Test<tLongitude12>(0);
 	UnitTest_PacketNMEAPayload_Test<tLongitude12>("03732.411956", "E");
 	UnitTest_PacketNMEAPayload_Test<tLongitude12>(231.4567834);
 
