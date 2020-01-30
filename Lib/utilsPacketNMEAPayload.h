@@ -34,47 +34,40 @@ struct tPayloadRMC
 	typedef Type::tTime<TimeSize> time_type;
 	typedef Type::tLatitude<LatitudeSize> latitude_type;
 	typedef Type::tLongitude<LongitudeSize> longitude_type;
+	typedef Type::tFloat<2> speed_type;
+	typedef Type::tFloat<2> course_type;
 
-	gnss_type GNSS = gnss_type::UNKNOWN;
+	gnss_type GNSS;
 	valid_type Valid;
 	date_type Date;
 	time_type Time;
 	latitude_type Latitude;
 	longitude_type Longitude;
+	speed_type Speed;
+	course_type Course;
 
 	tPayloadRMC() = default;
 	explicit tPayloadRMC(const tPayloadCommon::value_type& val)
 	{
 		if (val.size() == FieldQty && val[0].size() > 3 && !std::strcmp(&val[0][2],"RMC"))
 		{
-			switch (val[0][1])
-			{
-			case 'P': GNSS = gnss_type::GPS; break;
-			case 'L': GNSS = gnss_type::GLONASS; break;
-			case 'N': GNSS = gnss_type::GPS_GLONASS; break;
-			}
-
+			GNSS = gnss_type(val[0][1]);
 			Time = time_type(val[1]);
 			Valid = valid_type(val[2]);
 			Latitude = latitude_type(val[3], val[4]);
 			Longitude = longitude_type(val[5], val[6]);
-			//...
+			Speed = speed_type(val[7]);
+			Course = course_type(val[8]);
 			Date = date_type(val[9]);
 		}
 	}
 
-	tPayloadCommon::value_type GetPayload()
+	tPayloadCommon::value_type GetPayload() const
 	{
 		tPayloadCommon::value_type Data;
 
 		std::string Str("G");
-		switch (GNSS)
-		{
-		case gnss_type::GPS: Str += 'P'; break;
-		case gnss_type::GLONASS: Str += 'L'; break;
-		case gnss_type::GPS_GLONASS: Str += 'N'; break;
-		default: Str += '-'; break;
-		}
+		Str += GNSS.ToString();
 		Data.push_back(Str + "RMC");
 		Data.push_back(Time.ToString());
 		Data.push_back(Valid.ToString());
@@ -82,8 +75,8 @@ struct tPayloadRMC
 		Data.push_back(Latitude.ToStringHemisphere());
 		Data.push_back(Longitude.ToStringValue());
 		Data.push_back(Longitude.ToStringHemisphere());
-		Data.push_back("");
-		Data.push_back("");
+		Data.push_back(Speed.ToString());
+		Data.push_back(Course.ToString());
 		Data.push_back(Date.ToString());
 		Data.push_back("");
 		Data.push_back("");

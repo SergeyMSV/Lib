@@ -47,7 +47,7 @@ void UnitTest_PacketNMEAPayload()
 
 	tMsgRMC Val(PacketData);
 
-	if (Val.GNSS != tMsgRMC::gnss_type::UNKNOWN)//Parsed!!
+	if (Val.GNSS.Value != tMsgRMC::gnss_type::tGNSS_State::UNKNOWN)//Parsed!!
 	{
 		utils::packet_NMEA::tPayloadCommon::value_type PacketData1 = Val.GetPayload();
 

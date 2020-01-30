@@ -89,6 +89,16 @@ void UnitTest_PacketNMEAType()
 	UnitTest_PacketNMEAPayload_Test<tLongitude12>("03732.411956", "E");
 	UnitTest_PacketNMEAPayload_Test<tLongitude12>(231.4567834);
 
+	UnitTest_PacketNMEAPayload_Test<tFloat<2>>();
+	UnitTest_PacketNMEAPayload_Test<tFloat<2>>(0);
+	UnitTest_PacketNMEAPayload_Test<tFloat<2>>("4.56");
+	UnitTest_PacketNMEAPayload_Test<tFloat<2>>(2.34);
+
+	UnitTest_PacketNMEAPayload_Test<tFloat<4>>();
+	UnitTest_PacketNMEAPayload_Test<tFloat<4>>(0);
+	UnitTest_PacketNMEAPayload_Test<tFloat<4>>("4.56");
+	UnitTest_PacketNMEAPayload_Test<tFloat<4>>(2.34);
+
 	std::cout << std::endl;
 }
 

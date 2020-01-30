@@ -27,13 +27,25 @@ namespace utils
 		namespace Type
 		{
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-enum class tGNSS : tUInt8//It's like bitfield
+struct tGNSS
 {
-	UNKNOWN = 0,
-	GPS = 1,    //0000'0001
-	GLONASS,    //0000'0010
-	GPS_GLONASS,//0000'0011
+	enum class tGNSS_State : tUInt8//It's like bitfield
+	{
+		UNKNOWN = 0,
+		GPS = 1,    //0000'0001
+		GLONASS,    //0000'0010
+		GPS_GLONASS,//0000'0011
+	};
+
+	tGNSS_State Value = tGNSS_State::UNKNOWN;
+
+	tGNSS() = default;
+	explicit tGNSS(tGNSS_State val) :Value(val) {}
+	explicit tGNSS(char val);
+
+	std::string ToString() const;
 };
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 struct tValid
 {
@@ -44,7 +56,7 @@ struct tValid
 	explicit tValid(bool val) :Value(val), Absent(false) {}
 	explicit tValid(const std::string& val);
 
-	std::string ToString();
+	std::string ToString() const;
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 struct tDate
@@ -58,7 +70,7 @@ struct tDate
 	tDate(tUInt8 year, tUInt8 month, tUInt8 day);
 	explicit tDate(const std::string& val);	
 
-	std::string ToString();
+	std::string ToString() const;
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 template <std::size_t Size>
@@ -95,7 +107,7 @@ struct tTime
 		}
 	}
 
-	std::string ToString()
+	std::string ToString() const
 	{
 		if (Absent) return "";
 
@@ -147,7 +159,7 @@ struct tLatitude
 		}
 	}
 
-	std::string ToStringValue()
+	std::string ToStringValue() const
 	{
 		if (Absent) return "";
 
@@ -170,14 +182,14 @@ struct tLatitude
 		return Str;
 	}
 
-	std::string ToStringHemisphere()
+	std::string ToStringHemisphere() const
 	{
 		if (Absent) return "";
 
 		return Value < 0 ? "S" : "N";
 	}
 
-	std::string ToString()
+	std::string ToString() const
 	{
 		return ToStringValue() + ',' + ToStringHemisphere();
 	}
@@ -216,7 +228,7 @@ struct tLongitude
 		}
 	}
 
-	std::string ToStringValue()
+	std::string ToStringValue() const
 	{
 		if (Absent) return "";
 
@@ -239,16 +251,53 @@ struct tLongitude
 		return Str;
 	}
 
-	std::string ToStringHemisphere()
+	std::string ToStringHemisphere() const
 	{
 		if (Absent) return "";
 
 		return Value < 0 ? "W" : "E";
 	}
 
-	std::string ToString()
+	std::string ToString() const
 	{
 		return ToStringValue() + ',' + ToStringHemisphere();
+	}
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////
+template <std::size_t SizeFract>
+struct tFloat
+{
+	double Value = 0;
+	bool Absent = true;
+
+private:
+	static const std::size_t SizeInt = 6;
+	static const std::size_t SizeMax = SizeInt + SizeFract + 1;
+
+public:
+	tFloat() = default;
+	explicit tFloat(double val) :Value(val), Absent(false) {}
+	tFloat(const std::string& val)
+	{
+		if (val.size() > 0 && val.size() < SizeMax)
+		{
+			Absent = false;
+
+			Value = std::strtod(val.c_str(), 0);
+		}
+	}
+
+	std::string ToString() const
+	{
+		if (Absent) return "";
+
+		const char StrFormat[] = { '%', '.', static_cast<char>(0x30 + SizeFract), 'f', 0 };
+
+		char Str[SizeMax + 1]{};
+
+		std::sprintf(Str, StrFormat, Value);
+
+		return Str;
 	}
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////
