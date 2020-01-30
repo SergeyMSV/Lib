@@ -35,6 +35,17 @@ enum class tGNSS : tUInt8//It's like bitfield
 	GPS_GLONASS,//0000'0011
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+struct tValid
+{
+	bool Value = false;
+
+	tValid() = default;
+	explicit tValid(bool val) :Value(val) {}
+	explicit tValid(const std::string& val);
+
+	std::string ToString();
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////
 struct tDate
 {
 	tUInt8 Year = 0;

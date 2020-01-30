@@ -29,12 +29,14 @@ template
 struct tPayloadRMC
 {
 	typedef Type::tGNSS gnss_type;
+	typedef Type::tValid valid_type;
 	typedef Type::tDate date_type;
 	typedef Type::tTime<TimeSize> time_type;
 	typedef Type::tLatitude<LatitudeSize> latitude_type;
 	typedef Type::tLongitude<LongitudeSize> longitude_type;
 
 	gnss_type GNSS = gnss_type::UNKNOWN;
+	valid_type Valid;
 	date_type Date;
 	time_type Time;
 	latitude_type Latitude;
@@ -53,7 +55,7 @@ struct tPayloadRMC
 			}
 
 			Time = time_type(val[1]);
-			//val[2]; A
+			Valid = valid_type(val[2]);
 			Latitude = latitude_type(val[3], val[4]);
 			Longitude = longitude_type(val[5], val[6]);
 			//...
@@ -75,7 +77,7 @@ struct tPayloadRMC
 		}
 		Data.push_back(Str + "RMC");
 		Data.push_back(Time.ToString());
-		Data.push_back("");
+		Data.push_back(Valid.ToString());
 		Data.push_back(Latitude.ToStringValue());
 		Data.push_back(Latitude.ToStringHemisphere());
 		Data.push_back(Longitude.ToStringValue());

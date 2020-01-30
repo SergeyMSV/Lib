@@ -7,6 +7,19 @@ namespace utils
 		namespace Type
 		{
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+tValid::tValid(const std::string& val)
+{
+	if (val.size() == 1)
+	{
+		Value = val[0] == 'A' ? true : false;
+	}
+}
+
+std::string tValid::ToString()
+{
+	return Value ? "A" : "V";
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
 tDate::tDate(tUInt8 year, tUInt8 month, tUInt8 day)
 	:Year(year), Month(month), Day(day)
 {
