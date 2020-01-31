@@ -5,11 +5,12 @@
 
 #include <iostream>
 #include <iomanip>
-//#include <tuple>
 
 namespace utils
 {
 
+void UnitTest_PacketNMEAPayloadGGA();
+void UnitTest_PacketNMEAPayloadGSV();
 void UnitTest_PacketNMEAPayloadRMC();
 
 void UnitTest_PacketNMEAPayload()
@@ -28,6 +29,8 @@ void UnitTest_PacketNMEAPayload()
 		std::cout << std::string(RawPacket.cbegin(), RawPacket.cend()) << '\n';//C++14
 	}
 
+	UnitTest_PacketNMEAPayloadGGA();
+	UnitTest_PacketNMEAPayloadGSV();
 	UnitTest_PacketNMEAPayloadRMC();
 
 
