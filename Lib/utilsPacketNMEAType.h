@@ -41,7 +41,7 @@ struct tGNSS
 
 	tGNSS() = default;
 	explicit tGNSS(tGNSS_State val) :Value(val) {}
-	explicit tGNSS(char val);
+	explicit tGNSS(const std::string& val);
 
 	std::string ToString() const;
 };

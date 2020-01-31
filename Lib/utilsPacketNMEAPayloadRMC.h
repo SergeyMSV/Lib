@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// utilsPacketNMEAPayload.h
+// utilsPacketNMEAPayloadRMC.h
 //
 // Standard ISO/IEC 114882, C++11
 //
@@ -51,7 +51,7 @@ struct tPayloadRMC
 	{
 		if (val.size() == FieldQty && val[0].size() > 3 && !std::strcmp(&val[0][2],"RMC"))
 		{
-			GNSS = gnss_type(val[0][1]);
+			GNSS = gnss_type(val[0]);
 			Time = time_type(val[1]);
 			Valid = valid_type(val[2]);
 			Latitude = latitude_type(val[3], val[4]);
@@ -66,9 +66,7 @@ struct tPayloadRMC
 	{
 		tPayloadCommon::value_type Data;
 
-		std::string Str("G");
-		Str += GNSS.ToString();
-		Data.push_back(Str + "RMC");
+		Data.push_back(GNSS.ToString() + "RMC");
 		Data.push_back(Time.ToString());
 		Data.push_back(Valid.ToString());
 		Data.push_back(Latitude.ToStringValue());
@@ -85,8 +83,6 @@ struct tPayloadRMC
 		return Data;
 	}
 };
-///////////////////////////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
 	}
 }

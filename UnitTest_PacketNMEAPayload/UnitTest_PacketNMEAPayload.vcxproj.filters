@@ -33,7 +33,7 @@
     <ClInclude Include="..\Lib\utilsPacketNMEAType.h">
       <Filter>Lib</Filter>
     </ClInclude>
-    <ClInclude Include="..\Lib\utilsPacketNMEAPayload.h">
+    <ClInclude Include="..\Lib\utilsPacketNMEAPayloadRMC.h">
       <Filter>Lib</Filter>
     </ClInclude>
   </ItemGroup>

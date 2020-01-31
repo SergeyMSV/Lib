@@ -1,4 +1,4 @@
-#include "utilsPacketNMEAPayload.h"
+#include "utilsPacketNMEAPayloadRMC.h"
 
 #include "utilsBase.h"
 #include "utilsTest.h"
@@ -55,7 +55,7 @@ void UnitTest_PacketNMEAPayload()
 
 		tVectorUInt8 RawPacket = Packet2.ToVector();
 
-		std::cout << "Preved: " << std::string(RawPacket.cbegin(), RawPacket.cend());//C++14
+		std::cout << std::string(RawPacket.cbegin(), RawPacket.cend());//C++14
 	}
 
 

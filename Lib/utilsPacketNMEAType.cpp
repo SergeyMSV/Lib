@@ -7,13 +7,16 @@ namespace utils
 		namespace Type
 		{
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-tGNSS::tGNSS(char val)
+tGNSS::tGNSS(const std::string& val)
 {
-	switch (val)
+	if (val.size() >= 2 && val[0] == 'G')
 	{
-	case 'P': Value = tGNSS_State::GPS; break;
-	case 'L': Value = tGNSS_State::GLONASS; break;
-	case 'N': Value = tGNSS_State::GPS_GLONASS; break;
+		switch (val[1])
+		{
+		case 'P': Value = tGNSS_State::GPS; break;
+		case 'L': Value = tGNSS_State::GLONASS; break;
+		case 'N': Value = tGNSS_State::GPS_GLONASS; break;
+		}
 	}
 }
 
@@ -21,9 +24,9 @@ std::string tGNSS::ToString() const
 {
 	switch (Value)
 	{
-	case tGNSS_State::GPS: return "P";
-	case tGNSS_State::GLONASS: return "L";
-	case tGNSS_State::GPS_GLONASS: return "N";
+	case tGNSS_State::GPS: return "GP";
+	case tGNSS_State::GLONASS: return "GL";
+	case tGNSS_State::GPS_GLONASS: return "GN";
 	}
 
 	return "-";
