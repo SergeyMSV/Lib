@@ -45,7 +45,6 @@ struct tGNSS
 
 	std::string ToString() const;
 };
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 struct tValid
 {
@@ -299,6 +298,28 @@ public:
 
 		return Str;
 	}
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////
+struct tPositioning
+{
+	enum class tPositioning_State : tUInt8
+	{
+		UNKNOWN = 0,
+		Autonomous,
+		Differential,
+		Estimated,
+		ManualInput,
+		Simulator,
+		DataNotValid,
+	};
+
+	tPositioning_State Value = tPositioning_State::UNKNOWN;
+
+	tPositioning() = default;
+	explicit tPositioning(tPositioning_State val) :Value(val) {}
+	explicit tPositioning(const std::string& val);
+
+	std::string ToString() const;
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 		}

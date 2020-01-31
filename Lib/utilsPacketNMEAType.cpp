@@ -94,6 +94,37 @@ std::string tDate::ToString() const
 	return Str;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+tPositioning::tPositioning(const std::string& val)
+{
+	if (val.size() == 1)
+	{
+		switch (val[0])
+		{
+		case 'A': Value = tPositioning_State::Autonomous; break;
+		case 'D': Value = tPositioning_State::Differential; break;
+		case 'E': Value = tPositioning_State::Estimated; break;
+		case 'M': Value = tPositioning_State::ManualInput; break;
+		case 'S': Value = tPositioning_State::Simulator; break;
+		case 'N': Value = tPositioning_State::DataNotValid; break;
+		}
+	}
+}
+
+std::string tPositioning::ToString() const
+{
+	switch (Value)
+	{
+	case tPositioning_State::Autonomous: return "A";
+	case tPositioning_State::Differential: return "D";
+	case tPositioning_State::Estimated: return "E";
+	case tPositioning_State::ManualInput: return "M";
+	case tPositioning_State::Simulator: return "S";
+	case tPositioning_State::DataNotValid: return "N";
+	}
+
+	return "-";
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
 		}
 	}
 }

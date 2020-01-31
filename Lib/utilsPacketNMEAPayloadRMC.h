@@ -36,6 +36,7 @@ struct tPayloadRMC
 	typedef Type::tLongitude<LongitudeSize> longitude_type;
 	typedef Type::tFloat<2> speed_type;
 	typedef Type::tFloat<2> course_type;
+	typedef Type::tPositioning positioning_type;
 
 	gnss_type GNSS;
 	valid_type Valid;
@@ -45,6 +46,7 @@ struct tPayloadRMC
 	longitude_type Longitude;
 	speed_type Speed;
 	course_type Course;
+	positioning_type Positioning;
 
 	tPayloadRMC() = default;
 	explicit tPayloadRMC(const tPayloadCommon::value_type& val)
@@ -59,6 +61,7 @@ struct tPayloadRMC
 			Speed = speed_type(val[7]);
 			Course = course_type(val[8]);
 			Date = date_type(val[9]);
+			Positioning = positioning_type(val[12]);
 		}
 	}
 
@@ -78,7 +81,7 @@ struct tPayloadRMC
 		Data.push_back(Date.ToString());
 		Data.push_back("");
 		Data.push_back("");
-		Data.push_back("");
+		Data.push_back(Positioning.ToString());
 
 		return Data;
 	}
