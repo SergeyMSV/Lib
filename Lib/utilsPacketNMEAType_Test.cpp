@@ -99,7 +99,17 @@ void UnitTest_PacketNMEAType()
 	UnitTest_PacketNMEAPayload_Test<tFloat<4>>("4.56");
 	UnitTest_PacketNMEAPayload_Test<tFloat<4>>(2.34);
 
-	std::cout << std::endl;
+	UnitTest_PacketNMEAPayload_Test<tUInt>();
+	UnitTest_PacketNMEAPayload_Test<tUInt>(0);
+	UnitTest_PacketNMEAPayload_Test<tUInt>("4356");
+	UnitTest_PacketNMEAPayload_Test<tUInt>(2734);
+
+	UnitTest_PacketNMEAPayload_Test<tUIntFixedSize<4>>();
+	UnitTest_PacketNMEAPayload_Test<tUIntFixedSize<4>>(0);
+	UnitTest_PacketNMEAPayload_Test<tUIntFixedSize<4>>("4356");
+	UnitTest_PacketNMEAPayload_Test<tUIntFixedSize<4>>(2734);
+
+ 	std::cout << std::endl;
 }
 
 }

@@ -322,6 +322,69 @@ struct tPositioning
 	std::string ToString() const;
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+struct tUInt
+{
+	tUInt32 Value = 0;
+	bool Absent = true;
+
+public:
+	tUInt() = default;
+	explicit tUInt(tUInt32 val) :Value(val), Absent(false) {}
+	tUInt(const std::string& val)
+	{
+		if (val.size() > 0)
+		{
+			Absent = false;
+
+			Value = std::strtol(val.c_str(), 0, 10);
+		}
+	}
+
+	std::string ToString() const
+	{
+		if (Absent) return "";
+
+		char Str[20]{};
+
+		std::sprintf(Str, "%d", Value);
+
+		return Str;
+	}
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////
+template <std::size_t Size>
+struct tUIntFixedSize
+{
+	tUInt32 Value = 0;
+	bool Absent = true;
+
+public:
+	tUIntFixedSize() = default;
+	explicit tUIntFixedSize(tUInt32 val) :Value(val), Absent(false) {}
+	tUIntFixedSize(const std::string& val)
+	{
+		if (val.size() == Size)
+		{
+			Absent = false;
+
+			Value = std::strtol(val.c_str(), 0, 10);
+		}
+	}
+
+	std::string ToString() const
+	{
+		if (Absent) return "";
+
+		const char StrFormat[] = { '%', '0', static_cast<char>(0x30 + Size), 'd', 0 };
+
+		char Str[Size + 1]{};
+
+		std::sprintf(Str, StrFormat, Value);
+
+		return Str;
+	}
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////
 		}
 	}
 }
