@@ -463,7 +463,7 @@ struct tPositioning
 template <typename TValue, std::size_t Size>
 struct tUInt
 {
-	TValue Value = 0;
+	TValue Value = static_cast<TValue>(0);
 	bool Absent = true;
 
 public:
@@ -496,7 +496,7 @@ public:
 template <typename TValue>
 struct tUInt<TValue, 0>
 {
-	TValue Value = 0;
+	TValue Value = static_cast<TValue>(0);
 	bool Absent = true;
 
 public:
