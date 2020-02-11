@@ -1,5 +1,6 @@
 #include "utilsPacketNMEA.h"
 #include "utilsPacketNMEAPayload.h"
+#include "utilsPacketNMEAPayloadPMTK.h"
 
 #include "utilsBase.h"
 #include "utilsTest.h"
@@ -26,7 +27,7 @@ void UnitTest_PacketNMEAPayload(const std::string& msg)
 
 	TPayload Val(PacketData);
 
-	if (Val.GNSS.Value != TPayload::gnss_type::tGNSS_State::UNKNOWN)//Parsed!!
+	//if (Val.GNSS.Value != TPayload::gnss_type::tGNSS_State::UNKNOWN)//Parsed!!
 	{
 		utils::packet_NMEA::tPayloadCommon::value_type PacketData1 = Val.GetPayload();
 
@@ -74,6 +75,33 @@ void UnitTest_PacketNMEAPayload()
 	UnitTest_PacketNMEAPayload<tPayloadRMC<13, 3, 4, 4>>("$GPRMC,082653.100,A,2446.4768,N,12100.0344,E,0.00,128.42,270705,,,A*67\xd\xa");
 	UnitTest_PacketNMEAPayload<tPayloadRMC<13, 3, 6, 6>>("$GNRMC,090210.000,A,5539.564975,N,03732.411956,E,0.03,274.40,120517,,,A*71\xd\xa");
 
+	UnitTest_PacketNMEAPayload<tPayloadPMTK001>("$PMTK001,604,3*32\xd\xa");
+	UnitTest_PacketNMEAPayload<tPayloadPMTK010>("$PMTK010,001*2E\xd\xa");
+	UnitTest_PacketNMEAPayload<tPayloadPMTK011>("$PMTK011,MTKGPS*08\xd\xa");
+	
+	//DRAFT
+	{
+		tPayloadPMTK314 Val;
+
+		utils::packet_NMEA::tPayloadCommon::value_type PacketData1 = Val.GetPayload();
+
+		tPacketNMEA Packet2(PacketData1);
+
+		tVectorUInt8 RawPacket = Packet2.ToVector();
+
+		std::cout << std::string(RawPacket.cbegin(), RawPacket.cend()) << '\n';//C++14
+	}
+	{
+		tPayloadPMTK314 Val(1, 2);
+
+		utils::packet_NMEA::tPayloadCommon::value_type PacketData1 = Val.GetPayload();
+
+		tPacketNMEA Packet2(PacketData1);
+
+		tVectorUInt8 RawPacket = Packet2.ToVector();
+
+		std::cout << std::string(RawPacket.cbegin(), RawPacket.cend()) << '\n';//C++14
+	}
 
 	std::cout << std::endl;
 }
