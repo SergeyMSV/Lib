@@ -158,5 +158,48 @@ struct tPayloadPMTK314
 	}
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+struct tPayloadPMTK705
+{
+	const char* PayloadID = "PMTK705";
+
+	typedef std::string release_type;
+	typedef std::string build_type;
+	typedef std::string internal_use_1_type;
+	typedef std::string internal_use_2_type;
+
+	release_type Release;
+	build_type Build;
+	internal_use_1_type InternalUse1;
+	internal_use_2_type InternalUse2;
+
+	tPayloadPMTK705() = default;
+	tPayloadPMTK705(const std::string& release, const std::string& revision, const std::string& internalUse1, const std::string& internalUse2)
+		:Release(release), Build(revision), InternalUse1(internalUse1), InternalUse2(internalUse2)
+	{ }
+	explicit tPayloadPMTK705(const tPayloadCommon::value_type& val)
+	{
+		if (val.size() == 5 && !std::strcmp(val[0].c_str(), PayloadID))
+		{
+			Release = val[1];
+			Build = val[2];
+			InternalUse1 = val[3];
+			InternalUse2 = val[4];
+		}
+	}
+
+	tPayloadCommon::value_type GetPayload() const
+	{
+		tPayloadCommon::value_type Data;
+
+		Data.push_back(PayloadID);
+		Data.push_back(Release);
+		Data.push_back(Build);
+		Data.push_back(InternalUse1);
+		Data.push_back(InternalUse2);
+
+		return Data;
+	}
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////
 	}
 }
