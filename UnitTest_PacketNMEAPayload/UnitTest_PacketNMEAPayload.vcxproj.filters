@@ -39,5 +39,8 @@
     <ClInclude Include="..\Lib\utilsPacketNMEAPayloadPMTK.h">
       <Filter>Lib</Filter>
     </ClInclude>
+    <ClInclude Include="..\Lib\utilsPacketNMEAPayloadPTWS.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
