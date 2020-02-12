@@ -96,6 +96,14 @@ void UnitTest_PacketNMEAPayload()
 	UnitTest_PacketNMEAPayload(tPayloadPMTK314());
 	UnitTest_PacketNMEAPayload(tPayloadPMTK314(1, 2, 3, 4, 5, 6, 18));
 
+	UnitTest_PacketNMEAPayload(tPayloadPMTK353());
+	UnitTest_PacketNMEAPayload(tPayloadPMTK353(false, false));
+	UnitTest_PacketNMEAPayload(tPayloadPMTK353(false, true));
+	UnitTest_PacketNMEAPayload(tPayloadPMTK353(true, false));
+	UnitTest_PacketNMEAPayload(tPayloadPMTK353(true, true));
+	if (tPayloadPMTK353(true, true).GetState() == Type::tGNSS_State::GPS_GLONASS)
+		std::cout << "OK\n";
+
 	UnitTest_PacketNMEAPayload(tPayloadPMTK705("AXN_3.84_3333_15071800", "0000","","1.0"));
 	UnitTest_PacketNMEAPayload(tPayloadPMTK705("AXN_3.84_3333_15071800", "0000", "la-la", "1.0"));
 

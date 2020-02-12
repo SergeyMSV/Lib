@@ -185,6 +185,50 @@ struct tPayloadPMTK314
 	}
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+struct tPayloadPMTK353
+{
+	const char* PayloadID = "PMTK353";
+
+	typedef Type::tUInt<tUInt8, 0> status_type;
+
+	status_type GPS;
+	status_type GLONASS;
+
+	tPayloadPMTK353() = default;
+	tPayloadPMTK353(bool gps, bool glonass)
+		:GPS(gps ? 1 : 0), GLONASS(glonass ? 1 : 0)
+	{ }
+	explicit tPayloadPMTK353(const tPayloadCommon::value_type& val)
+	{
+		if (val.size() == 3 && !std::strcmp(val[0].c_str(), PayloadID))
+		{
+			GPS = status_type(val[1]);
+			GLONASS = status_type(val[2]);
+		}
+	}
+
+	tPayloadCommon::value_type GetPayload() const
+	{
+		tPayloadCommon::value_type Data;
+
+		Data.push_back(PayloadID);
+		Data.push_back(GPS.ToString());
+		Data.push_back(GLONASS.ToString());
+
+		return Data;
+	}
+
+	Type::tGNSS_State GetState()
+	{
+		tUInt8 State = 0;
+
+		if (GPS.Value) State |= 1;
+		if (GLONASS.Value) State |= (1 << 1);
+
+		return static_cast<Type::tGNSS_State>(State);
+	}
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////
 struct tPayloadPMTK705
 {
 	const char* PayloadID = "PMTK705";
