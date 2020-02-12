@@ -94,7 +94,7 @@ void UnitTest_PacketNMEAPayload()
 	UnitTest_PacketNMEAPayload<tPayloadPMTK011, std::string>("$PMTK011,MTKGPS*08\xd\xa");
 
 	UnitTest_PacketNMEAPayload(tPayloadPMTK314());
-	UnitTest_PacketNMEAPayload(tPayloadPMTK314(1, 2));
+	UnitTest_PacketNMEAPayload(tPayloadPMTK314(1, 2, 3, 4, 5, 6, 18));
 
 	UnitTest_PacketNMEAPayload(tPayloadPMTK705("AXN_3.84_3333_15071800", "0000","","1.0"));
 	UnitTest_PacketNMEAPayload(tPayloadPMTK705("AXN_3.84_3333_15071800", "0000", "la-la", "1.0"));
