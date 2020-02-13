@@ -9,6 +9,8 @@
 #include <iostream>
 #include <iomanip>
 
+#include <functional>//TEST C++11
+
 namespace utils
 {
 
@@ -51,6 +53,26 @@ void UnitTest_PacketNMEAPayload(const TPayload& val)
 	tVectorUInt8 RawPacket = Packet.ToVector();
 
 	UnitTest_PacketNMEAPayload<TPayload>(RawPacket);
+}
+
+struct tDataSet
+{
+	int A = 0;
+};
+
+template <class T>
+bool TryParse(const utils::packet_NMEA::tPayloadCommon::value_type& val, tDataSet& dataSet)
+{
+	if (T::Try(val))
+	{
+		T Pack(val);
+
+		dataSet.A = Pack.A;
+
+		return true;
+	}
+
+	return false;
 }
 
 void UnitTest_PacketNMEAPayload()
@@ -114,6 +136,49 @@ void UnitTest_PacketNMEAPayload()
 	UnitTest_PacketNMEAPayload(tPayloadPTWS_JAM_SIGNAL_VAL());
 	UnitTest_PacketNMEAPayload(tPayloadPTWS_JAM_SIGNAL_VAL(12, 1575.000002));
 	UnitTest_PacketNMEAPayload<tPayloadPTWS_JAM_SIGNAL_VAL, std::string>("$PTWS,JAM,SIGNAL,VAL,INDEX,8,FREQ,1574.990234*65\xd\xa");
+
+
+	//tPayloadRMC< 13, 3, 4, 4 >::Try();
+
+	//{
+	//	std::string msg("$PTWS,JAM,SIGNAL,VAL,INDEX,8,FREQ,1574.990234*65\xd\xa");
+
+	//	tVectorUInt8 DataVector(msg.cbegin(), msg.cend());//C++14
+
+	//	tPacketNMEA Packet;
+
+	//	bool Result = tPacketNMEA::Find(DataVector, Packet);
+
+	//	utils::packet_NMEA::tPayloadCommon::value_type PacketData = Packet.GetPayload();
+
+	//	struct tDecoder
+	//	{
+	//		std::function<bool(const tPayloadCommon::value_type&)> Try;
+
+	//	};
+
+	//	//tDecoder<tPayloadPMTK314> A{ tPayloadPMTK314::Try}
+
+	//	/*std::vector<std::function<bool(const tPayloadCommon::value_type&)>> Lala
+	//	{
+	//		tPayloadGGA<15, 3, 4, 4, 5, 2, 3, 2>::Try,
+	//		tPayloadPMTK314::Try,
+	//		tPayloadPTWS_JAM_SIGNAL_VAL::Try
+	//	};
+
+	//	for (auto& i : Lala)
+	//	{
+	//		if (i(PacketData))
+	//		{
+	//			std::cout << "OKK" << std::endl;
+	//			Set()
+	//		}
+	//		else
+	//		{
+	//			std::cout << "NOOO" << std::endl;
+	//		}
+	//	}*/
+	//}
 
 
 	std::cout << std::endl;
