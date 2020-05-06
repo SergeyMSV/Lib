@@ -2,15 +2,25 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/Lib/v16
-/UnitTest_PatternCommand/x64/Debug
-/x64/Debug
-/UnitTest_PatternState/x64/Debug
+/.vs
+/UnitTest/x64/Debug
+/UnitTest_PacketNMEA/x64/Debug
 /UnitTest_PacketNMEAPayload/x64/Debug
-/UnitTest/x64/Debug
-/UnitTest/x64/Debug
-/Debug
-/UnitTest/Debug
-/UnitTest_PacketNMEAPayload/Debug
-/UnitTest_PacketNMEAType/Debug
 /UnitTest_PacketNMEAType/x64/Debug
+/UnitTest_PatternCommand/x64/Debug
+/UnitTest_PatternState/x64/Debug
+/x64/Debug
+/UnitTest_Base/x64/Debug
+/UnitTest_Charset/x64/Debug
+/UnitTest_CRC/x64/Debug
+/UnitTest_CryptoAES/x64/Debug
+/UnitTest_CryptoRSA/x64/Debug
+/UnitTest_Key/x64/Debug
+/UnitTest_Log/x64/Debug
+/UnitTest_Packet/x64/Debug
+/UnitTest_PacketBNTBX/x64/Debug
+/UnitTest_PacketStar/x64/Debug
+/UnitTest_PacketStar2/x64/Debug
+/UnitTest_Shell/x64/Debug
+/UnitTest_Test/x64/Debug
+/UnitTest_Trap/x64/Debug
