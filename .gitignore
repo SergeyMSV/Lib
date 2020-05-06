@@ -24,3 +24,4 @@
 /UnitTest_Shell/x64/Debug
 /UnitTest_Test/x64/Debug
 /UnitTest_Trap/x64/Debug
+*.user
