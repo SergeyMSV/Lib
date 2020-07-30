@@ -21,12 +21,12 @@ namespace utils
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 struct tPayloadPTWS_JAM_SIGNAL_VAL
 {
-	static inline const char* PayloadID = "PTWS";//C++17
-	static inline const char* PayloadMsgID = "JAM";
-	static inline const char* PayloadMsgID2 = "SIGNAL";
-	static inline const char* PayloadMsgCMD = "VAL";
-	static inline const char* PayloadMsgVAL1 = "INDEX";
-	static inline const char* PayloadMsgVAL2 = "FREQ";
+	static const char* PayloadID;
+	static const char* PayloadMsgID;
+	static const char* PayloadMsgID2;
+	static const char* PayloadMsgCMD;
+	static const char* PayloadMsgVAL1;
+	static const char* PayloadMsgVAL2;
 
 	typedef Type::tUInt<tUInt8, 0> index_type;
 	typedef Type::tFloat<0, 6> frequency_type;
@@ -74,12 +74,19 @@ struct tPayloadPTWS_JAM_SIGNAL_VAL
 		return Data;
 	}
 };
+
+const char* tPayloadPTWS_JAM_SIGNAL_VAL::PayloadID = "PTWS";
+const char* tPayloadPTWS_JAM_SIGNAL_VAL::PayloadMsgID = "JAM";
+const char* tPayloadPTWS_JAM_SIGNAL_VAL::PayloadMsgID2 = "SIGNAL";
+const char* tPayloadPTWS_JAM_SIGNAL_VAL::PayloadMsgCMD = "VAL";
+const char* tPayloadPTWS_JAM_SIGNAL_VAL::PayloadMsgVAL1 = "INDEX";
+const char* tPayloadPTWS_JAM_SIGNAL_VAL::PayloadMsgVAL2 = "FREQ";
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 struct tPayloadPTWS_VERSION_GET
 {
-	static inline const char* PayloadID = "PTWS";
-	static inline const char* PayloadMsgID = "VERSION";
-	static inline const char* PayloadMsgCMD = "GET";
+	static const char* PayloadID;
+	static const char* PayloadMsgID;
+	static const char* PayloadMsgCMD;
 
 	tPayloadPTWS_VERSION_GET() = default;
 	explicit tPayloadPTWS_VERSION_GET(const tPayloadCommon::value_type& val)
@@ -109,12 +116,16 @@ struct tPayloadPTWS_VERSION_GET
 		return Data;
 	}
 };
+
+const char* tPayloadPTWS_VERSION_GET::PayloadID = "PTWS";
+const char* tPayloadPTWS_VERSION_GET::PayloadMsgID = "VERSION";
+const char* tPayloadPTWS_VERSION_GET::PayloadMsgCMD = "GET";
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 struct tPayloadPTWS_VERSION_VAL
 {
-	static inline const char* PayloadID = "PTWS";
-	static inline const char* PayloadMsgID = "VERSION";
-	static inline const char* PayloadMsgCMD = "VAL";
+	static const char* PayloadID;
+	static const char* PayloadMsgID;
+	static const char* PayloadMsgCMD;
 
 	typedef std::string version_type;
 
@@ -152,6 +163,10 @@ struct tPayloadPTWS_VERSION_VAL
 		return Data;
 	}
 };
+
+const char* tPayloadPTWS_VERSION_VAL::PayloadID = "PTWS";
+const char* tPayloadPTWS_VERSION_VAL::PayloadMsgID = "VERSION";
+const char* tPayloadPTWS_VERSION_VAL::PayloadMsgCMD = "VAL";
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 	}
 }
