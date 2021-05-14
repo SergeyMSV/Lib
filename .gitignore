@@ -25,3 +25,12 @@
 /UnitTest_Test/x64/Debug
 /UnitTest_Trap/x64/Debug
 *.user
+*.tlog
+*.obj
+*.log
+*.exe
+*.recipe
+*.ilk
+*.pdb
+*.vcxproj.FileListAbsolute.txt
+*.idb
